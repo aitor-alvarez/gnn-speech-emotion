@@ -57,4 +57,5 @@ class ResidualBLSTM(nn.Module):
         out = out_residual.reshape(batch, time, -1)
         lstm_out, hidden = self.lstm(out)
         flat_out = self.flatten(lstm_out)
-        return flat_out
+        fc = nn.Linear(flat_out, 512)
+        return fc

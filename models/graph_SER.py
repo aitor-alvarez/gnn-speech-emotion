@@ -1,8 +1,6 @@
-from .speech_representations import ResidualBLSTM
-from .gnn import GCNN
 from torch import nn
 
-#Combining acoustic representation learning with graph rep. learning.
+#Combining acoustic representation learning with GNN.
 
 class Prosodic_Graph(nn.Module):
 	def __init__(self, acoustic_model, graph_model):
@@ -10,8 +8,8 @@ class Prosodic_Graph(nn.Module):
 		self.acoustic_model = acoustic_model
 		self.GNN = graph_model
 
-	def forward(self, audio_spec):
-		x = self.acoustic_model(audio_spec)
-		x = self.GNN(x)
-
+	#Input of the architecture is a dataset of speech files and a network adjacency list.
+	def forward(self, audio_file, adj):
+		x = self.acoustic_model(audio_file)
+		x = self.GNN(x, adj)
 		return x
