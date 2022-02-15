@@ -2,14 +2,12 @@ import os
 import numpy as np
 import parselmouth
 from pydub import  AudioSegment
-from torchaudio import functional as F
-import torchaudio
 
 #Functions to extract speech utterances and intonation contours and to plot them with their acoustic features
 
 #Segment speech utterances based on
 def extract_speech_utterances(dir_path, slice_path):
-	files = [f for f in os.listdir(dir_path) if f.endswith('.flac')]
+	files = [f for f in os.listdir(dir_path) if f.endswith('.wav')]
 	pitches = [parselmouth.Sound(dir_path+f).to_pitch() for f in files ]
 	fqs = [pitch.selected_array['frequency'] for pitch in pitches]
 	k = 0
@@ -18,7 +16,7 @@ def extract_speech_utterances(dir_path, slice_path):
 		diff = np.diff(nonzero)
 		skip_inds = np.where(diff>1)[0]
 		newInd = nonzero[0]
-		filename = files[k].replace('.flac', '')
+		filename = files[k].replace('.wav', '')
 		for s in skip_inds:
 			try:
 				dist  = pitches[k].get_time_from_frame_number(nonzero[s+1])- pitches[k].get_time_from_frame_number(nonzero[s])
@@ -92,3 +90,28 @@ def get_interval(dist):
 			return '-2'
 		else:
 			return '2'
+	elif i >= 250 and i < 350:
+		if dist < 0:
+			return '-3'
+		else:
+			return '3'
+	elif i >= 350 and i < 450:
+		if dist < 0:
+			return '-4'
+		else:
+			return '4'
+	elif i >= 450 and i < 550:
+		if dist < 0:
+			return '-5'
+		else:
+			return '5'
+	elif i >= 550 and i < 650:
+		if dist < 0:
+			return '-6'
+		else:
+			return '6'
+	else:
+		if dist < 0:
+			return '-7'
+		else:
+			return '7'
