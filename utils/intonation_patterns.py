@@ -3,8 +3,35 @@ import numpy as np
 import parselmouth
 from pydub import  AudioSegment
 from utils.gapbide import Gapbide
+import pandas as pd
 
 #Functions to extract speech utterances and intonation contours
+
+#IEMOCAP labels used
+emotions_used = { 'ang':0, 'hap':1, 'neu':2, 'sad':3 }
+emotions=['ang', 'hap', 'neu', 'sad']
+
+#We build the corpus creating directories by emotion to be used by torch dataloader
+def build_corpus(iemocap_dir, test=False, train=False):
+	csv_files = [csv for csv in os.listdir(iemocap_dir) if csv.endswith('.csv')]
+	if test ==True:
+		subpath = '/Test/'
+	if train ==True:
+		subpath == '/Train/'
+	for c in csv_files:
+		print("Start creating the corpus...")
+		df= pd.read_csv(c)
+		for row in df.itertuples():
+			if row['emotion'] in emotions:
+				if os.path.isdir(iemocap_dir+subpath+row['emotion']):
+					os.rename(iemocap_dir+subpath+subpath+row['wav_file'], iemocap_dir+subpath+row['emotion']+'/'+row['wav_file'] )
+				else:
+					os.mkdir(iemocap_dir + subpath + row['emotion'])
+					os.rename(iemocap_dir + subpath + subpath + row['wav_file'],
+					          iemocap_dir + subpath + row['emotion'] + '/' + row['wav_file'])
+
+	print("corpus completed")
+
 
 def generate_dataset(input_dir, output_dir):
 	patterns, files = get_patterns(input_dir)
