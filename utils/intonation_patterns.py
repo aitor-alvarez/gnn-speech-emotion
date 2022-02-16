@@ -14,22 +14,22 @@ emotions=['ang', 'hap', 'neu', 'sad']
 #We build the corpus creating directories by emotion to be used by torch dataloader
 def build_corpus(iemocap_dir, test=False, train=False):
 	csv_files = [csv for csv in os.listdir(iemocap_dir) if csv.endswith('.csv')]
+	subpath=''
 	if test ==True:
 		subpath = '/Test/'
 	if train ==True:
-		subpath == '/Train/'
+		subpath = '/Train/'
 	for c in csv_files:
 		print("Start creating the corpus...")
-		df= pd.read_csv(c)
+		df= pd.read_csv(iemocap_dir+subpath + '/' +c)
 		for row in df.itertuples():
-			if row['emotion'] in emotions:
-				if os.path.isdir(iemocap_dir+subpath+row['emotion']):
-					os.rename(iemocap_dir+subpath+subpath+row['wav_file'], iemocap_dir+subpath+row['emotion']+'/'+row['wav_file'] )
+			if row[4] in emotions:
+				if os.path.isdir(iemocap_dir+subpath +row[4]):
+					os.rename(iemocap_dir+subpath+subpath +row[3]+'.wav', iemocap_dir+subpath+ '/' +row[4]+'/'+row[3]+'.wav' )
 				else:
-					os.mkdir(iemocap_dir + subpath + row['emotion'])
-					os.rename(iemocap_dir + subpath + subpath + row['wav_file'],
-					          iemocap_dir + subpath + row['emotion'] + '/' + row['wav_file'])
-
+					os.mkdir(iemocap_dir + subpath + row[4])
+					os.rename(iemocap_dir + subpath + subpath + row[3]+'.wav',
+					          iemocap_dir + subpath  + row[4] + '/' + row[3]+'.wav')
 	print("corpus completed")
 
 
