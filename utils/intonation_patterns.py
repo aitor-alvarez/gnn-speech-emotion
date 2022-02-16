@@ -2,34 +2,22 @@ import os
 import numpy as np
 import parselmouth
 from pydub import  AudioSegment
+from utils.gapbide import Gapbide
 
-#Functions to extract speech utterances and intonation contours and to plot them with their acoustic features
+#Functions to extract speech utterances and intonation contours
 
-#Segment speech utterances based on
-def extract_speech_utterances(dir_path, slice_path):
-	files = [f for f in os.listdir(dir_path) if f.endswith('.wav')]
-	pitches = [parselmouth.Sound(dir_path+f).to_pitch() for f in files ]
-	fqs = [pitch.selected_array['frequency'] for pitch in pitches]
-	k = 0
-	for fq in fqs:
-		nonzero = fq.nonzero()[0]
-		diff = np.diff(nonzero)
-		skip_inds = np.where(diff>1)[0]
-		newInd = nonzero[0]
-		filename = files[k].replace('.wav', '')
-		for s in skip_inds:
-			try:
-				dist  = pitches[k].get_time_from_frame_number(nonzero[s+1])- pitches[k].get_time_from_frame_number(nonzero[s])
-				if dist >= 0.25:
-					slice_audio(pitches[k].get_time_from_frame_number(newInd), pitches[k].get_time_from_frame_number(nonzero[s]), slice_path, filename+'_'+str(s)+'.flac', dir_path+filename+'.flac')
-					newInd = nonzero[s+1]
-			except:
-				print("error")
-		dist = pitches[k].get_time_from_frame_number(len(pitches[k])) - pitches[k].get_time_from_frame_number(nonzero[-1])
-		if dist >= 0.25 and dist<0.5:
-			slice_audio(pitches[k].get_time_from_frame_number(nonzero[-1]), pitches[k].get_time_from_frame_number(len(pitches[k])), slice_path, filename+'_'+str(s+1)+'.flac', dir_path+filename+'.flac')
-		k +=1
-	print("segmentation completed")
+def generate_dataset(input_dir, output_dir):
+	patterns, files = get_patterns(input_dir)
+
+
+
+#Process audio files and return intervallic contours.
+def get_patterns(audio_dir):
+	fqs, files = get_f0_praat(audio_dir)
+	contours, inds = get_interval_contour(fqs)
+	pattern_length = 5
+	patterns= Gapbide(contours, 6, 0, 0, pattern_length).run()
+	return patterns, files
 
 
 def slice_audio(slice_from, slice_to, path, name, audio_file):
@@ -60,7 +48,7 @@ def get_interval_contour(fqs):
 		for i in range(len(f)-1):
 			if i < len(f):
 				if f[i] == 0 or f[i+1] == 0:
-					pass
+					continue
 				else:
 					dist = 1200 * np.log2(f[i+1]/f[i])
 					dist = get_interval(dist)
