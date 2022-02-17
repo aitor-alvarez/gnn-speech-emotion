@@ -1,5 +1,5 @@
 class Gapbide:
-	def __init__(self, sdb, sup, m, n, patternLength):
+	def __init__(self, sdb, sup, m, n, patternLength, file_name):
 		'''
 		sdb: a list of sequences,
 		sup: the minimum threshold of support,
@@ -13,20 +13,20 @@ class Gapbide:
 		self.count_non_closed = 0
 		self.count_pruned = 0
 		self.patternLength = patternLength
+		self.file_name = file_name
 
 	def run(self):
-		PDB=[]
 		l1_patterns = self.gen_l1_patterns()
 		for pattern, sup, pdb in l1_patterns:
-			PDB.append(self.span(pattern, pdb))
-		return PDB
+			self.span(pattern, sup, pdb)
 
-	def output(self, pattern, pdb):
+	def output(self, pattern, sup, pdb):
+		output=[]
 		if len(pattern) >= self.patternLength:
-			strPDB = str(pdb)
-			strPDB = strPDB.replace('[', '')
-			strPDB = strPDB.replace(']', '')
-			return strPDB
+			file_ = open(self.file_name + '_intervals.txt', 'a')
+			strPDB = str(pattern)
+			file_.write(strPDB + "\n")
+			file_.close()
 
 	def gen_l1_patterns(self):
 		'''

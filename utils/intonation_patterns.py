@@ -4,6 +4,7 @@ import parselmouth
 from pydub import  AudioSegment
 from utils.gapbide import Gapbide
 import pandas as pd
+from utils.process_file import create_dictionary
 
 #Functions to extract speech utterances and intonation contours
 
@@ -13,12 +14,12 @@ emotions=['ang', 'hap', 'neu', 'sad']
 
 #We build the corpus creating directories by emotion to be used by torch dataloader
 def build_corpus(iemocap_dir, test=False, train=False):
-	csv_files = [csv for csv in os.listdir(iemocap_dir) if csv.endswith('.csv')]
 	subpath=''
 	if test ==True:
 		subpath = '/Test/'
 	if train ==True:
 		subpath = '/Train/'
+	csv_files = [csv for csv in os.listdir(iemocap_dir+subpath) if csv.endswith('.csv')]
 	for c in csv_files:
 		print("Start creating the corpus...")
 		df= pd.read_csv(iemocap_dir+subpath + '/' +c)
@@ -33,18 +34,14 @@ def build_corpus(iemocap_dir, test=False, train=False):
 	print("corpus completed")
 
 
-def generate_dataset(input_dir, output_dir):
-	patterns, files = get_patterns(input_dir)
-
-
-
-#Process audio files and return intervallic contours.
-def get_patterns(audio_dir):
+def generate_dataset(audio_dir):
 	fqs, files = get_f0_praat(audio_dir)
 	contours, inds = get_interval_contour(fqs)
-	pattern_length = 5
-	patterns= Gapbide(contours, 6, 0, 0, pattern_length).run()
-	return patterns, files
+	pattern_length = 6
+	filename = 'patterns/'+audio_dir.split('/')[-2]
+	Gapbide(contours, 6, 0, 0, pattern_length, filename).run()
+	dictionary = create_dictionary(filename)
+
 
 
 def slice_audio(slice_from, slice_to, path, name, audio_file):
@@ -59,7 +56,7 @@ def slice_audio(slice_from, slice_to, path, name, audio_file):
 
 #extract f0 from Parselmouth Praat function
 def get_f0_praat(audio_dir):
-	files = [f for f in os.listdir(audio_dir) if f.endswith('.flac')]
+	files = [f for f in os.listdir(audio_dir) if f.endswith('.wav')]
 	pitches = [parselmouth.Sound(audio_dir + f).to_pitch(pitch_floor=75.0, pitch_ceiling=650.0) for f in files]
 	fqs = [pitch.kill_octave_jumps().selected_array['frequency'] for pitch in pitches]
 	return fqs, files
