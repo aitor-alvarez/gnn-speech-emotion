@@ -12,7 +12,7 @@ from utils.process_file import create_dictionary
 emotions_used = { 'ang':0, 'hap':1, 'neu':2, 'sad':3 }
 emotions=['ang', 'hap', 'neu', 'sad']
 
-#We build the corpus creating directories by emotion to be used by torch dataloader
+#We build the corpus by creating directories by emotion to be used by torch dataloader
 def build_corpus(iemocap_dir, test=False, train=False):
 	subpath=''
 	if test ==True:
@@ -81,6 +81,15 @@ def get_interval_contour(fqs):
 		contours.append(contour)
 		inds.append(ind)
 	return contours, inds
+
+
+def find_sublist(s,l):
+    result=[]
+    sll=len(s)
+    for ind in (i for i,e in enumerate(l) if e==s[0]):
+        if l[ind:ind+sll]==s:
+            result.append((ind,ind+sll-1))
+    return result
 
 
 def get_interval(dist):
