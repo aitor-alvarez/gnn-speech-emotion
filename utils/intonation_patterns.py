@@ -5,11 +5,11 @@ from pydub import  AudioSegment
 from utils.gapbide import Gapbide
 import pandas as pd
 from utils.process_file import create_dictionary
+import uuid
 
 #Functions to extract speech utterances and intonation contours
 
 #IEMOCAP labels used
-emotions_used = { 'ang':0, 'hap':1, 'neu':2, 'sad':3 }
 emotions=['ang', 'hap', 'neu', 'sad']
 
 #We build the corpus by creating directories by emotion to be used by torch dataloader
@@ -34,13 +34,33 @@ def build_corpus(iemocap_dir, test=False, train=False):
 	print("corpus completed")
 
 
-def generate_dataset(audio_dir):
-	fqs, files = get_f0_praat(audio_dir)
+def generate_dataset(audio_dir, emo):
+	fqs, files, pitches = get_f0_praat(audio_dir)
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 6
-	filename = 'patterns/'+audio_dir.split('/')[-2]
+	filename = 'patterns/'+audio_dir.split('/')[-2]+'_intervals.txt'
 	Gapbide(contours, 6, 0, 0, pattern_length, filename).run()
-	dictionary = create_dictionary(filename)
+	dictionary = create_dictionary('patterns/')
+	path_out_audio='patterns/'+emo+'/'
+	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio)
+
+
+#Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
+# contained in the dictionary
+def create_audio_samples(dictionary, contours, files, pitches, inds, path):
+	for d in dictionary:
+		for i, c in enumerate(contours):
+			if len(d) > len(c):
+				continue
+			else:
+				sub = find_sublist(d, c)
+				print(sub)
+			if sub:
+				for s in sub:
+					name = files[i].replace('.wav', '_')+str(uuid.uuid4())+'.wav'
+					ini = inds[i][s[0]][0]
+					end = inds[i][s[1]][0]
+					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, files[i])
 
 
 
@@ -59,7 +79,7 @@ def get_f0_praat(audio_dir):
 	files = [f for f in os.listdir(audio_dir) if f.endswith('.wav')]
 	pitches = [parselmouth.Sound(audio_dir + f).to_pitch(pitch_floor=75.0, pitch_ceiling=650.0) for f in files]
 	fqs = [pitch.kill_octave_jumps().selected_array['frequency'] for pitch in pitches]
-	return fqs, files
+	return fqs, files, pitches
 
 
 #return a list of intervallic distances between F0 points expressed in cents
@@ -96,43 +116,63 @@ def get_interval(dist):
 	i = abs(dist)
 	if i < 50:
 		return '0'
-	elif i >= 50 and i < 150:
+	elif i >= 50 and i < 100:
 		if dist < 0:
 			return '-1'
 		else:
 			return '1'
-	elif i >= 150 and i < 250:
+	elif i >= 100 and i < 150:
 		if dist < 0:
 			return '-2'
 		else:
 			return '2'
-	elif i >= 150 and i < 250:
+	elif i >= 150 and i < 200:
 		if dist < 0:
 			return '-2'
 		else:
 			return '2'
-	elif i >= 250 and i < 350:
+	elif i >= 200 and i < 250:
 		if dist < 0:
 			return '-3'
 		else:
 			return '3'
-	elif i >= 350 and i < 450:
+	elif i >= 250 and i < 300:
 		if dist < 0:
 			return '-4'
 		else:
 			return '4'
-	elif i >= 450 and i < 550:
+	elif i >= 300 and i < 350:
 		if dist < 0:
 			return '-5'
 		else:
 			return '5'
-	elif i >= 550 and i < 650:
+	elif i >= 350 and i < 400:
 		if dist < 0:
 			return '-6'
 		else:
 			return '6'
-	else:
+	elif i >= 400 and i < 450:
 		if dist < 0:
 			return '-7'
 		else:
 			return '7'
+	elif i >= 450 and i < 500:
+		if dist < 0:
+			return '-8'
+		else:
+			return '8'
+	elif i >= 500 and i < 550:
+		if dist < 0:
+			return '-9'
+		else:
+			return '9'
+	elif i >= 550 and i < 600:
+		if dist < 0:
+			return '-10'
+		else:
+			return '10'
+	else:
+		if dist < 0:
+			return '-11'
+		else:
+			return '11'
