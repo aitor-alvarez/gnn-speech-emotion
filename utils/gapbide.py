@@ -25,7 +25,7 @@ class Gapbide:
 		if len(pattern) >= self.patternLength:
 			file_ = open(self.file_name + '_intervals.txt', 'a')
 			strPDB = str(pattern)
-			file_.write(strPDB + "\n")
+			file_.write(strPDB + str(sup) + "\n")
 			file_.close()
 
 	def gen_l1_patterns(self):

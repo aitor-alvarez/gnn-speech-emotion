@@ -13,12 +13,8 @@ import uuid
 emotions=['ang', 'hap', 'neu', 'sad']
 
 #We build the corpus by creating directories by emotion to be used by torch dataloader
-def build_corpus(iemocap_dir, test=False, train=False):
-	subpath=''
-	if test ==True:
-		subpath = '/Test/'
-	if train ==True:
-		subpath = '/Train/'
+def build_corpus(iemocap_dir):
+	subpath='/Train/'
 	csv_files = [csv for csv in os.listdir(iemocap_dir+subpath) if csv.endswith('.csv')]
 	for c in csv_files:
 		print("Start creating the corpus...")
@@ -35,33 +31,31 @@ def build_corpus(iemocap_dir, test=False, train=False):
 
 
 def generate_dataset(audio_dir, emo):
-	fqs, files, pitches = get_f0_praat(audio_dir)
+	fqs, files, pitches = get_f0_praat(audio_dir+emo+'/')
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 6
-	filename = 'patterns/'+audio_dir.split('/')[-2]+'_intervals.txt'
+	filename = 'patterns/'+emo
 	Gapbide(contours, 6, 0, 0, pattern_length, filename).run()
 	dictionary = create_dictionary('patterns/')
 	path_out_audio='patterns/'+emo+'/'
-	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio)
+	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
 
 
 #Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
 # contained in the dictionary
-def create_audio_samples(dictionary, contours, files, pitches, inds, path):
+def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio_dir):
 	for d in dictionary:
 		for i, c in enumerate(contours):
 			if len(d) > len(c):
 				continue
 			else:
 				sub = find_sublist(d, c)
-				print(sub)
 			if sub:
 				for s in sub:
 					name = files[i].replace('.wav', '_')+str(uuid.uuid4())+'.wav'
-					ini = inds[i][s[0]][0]
-					end = inds[i][s[1]][0]
-					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, files[i])
-
+					ini = inds[i][s[0]][0]+1
+					end = inds[i][s[1]][0]+1
+					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, audio_dir+files[i])
 
 
 def slice_audio(slice_from, slice_to, path, name, audio_file):
