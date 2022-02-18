@@ -26,7 +26,7 @@ def parse_patterns(p):
 
 
 def read_directory(path):
-    all_patterns = [read_file(path+f) for f in os.listdir(path) if f.endswith('.txt')]
+    all_patterns = [read_file(path+f) for f in os.listdir(path) if f.endswith('_maximal.txt')]
     return all_patterns
 
 

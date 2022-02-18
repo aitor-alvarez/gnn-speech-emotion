@@ -6,6 +6,7 @@ from utils.gapbide import Gapbide
 import pandas as pd
 from utils.process_file import create_dictionary
 import uuid
+from utils.MaximaPatterns import MaximalPatterns
 
 #Functions to extract speech utterances and intonation contours
 
@@ -35,11 +36,11 @@ def generate_dataset(audio_dir, emo):
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 6
 	filename = 'patterns/'+emo
-	Gapbide(contours, 6, 0, 0, pattern_length, filename).run()
+	Gapbide(contours, 10, 0, 0, pattern_length, filename).run()
+	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/')
 	path_out_audio='patterns/'+emo+'/'
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
-
 
 #Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
 # contained in the dictionary
@@ -109,64 +110,64 @@ def find_sublist(s,l):
 def get_interval(dist):
 	i = abs(dist)
 	if i < 50:
-		return '0'
-	elif i >= 50 and i < 100:
 		if dist < 0:
 			return '-1'
+		elif dist == 0:
+			return '0'
 		else:
 			return '1'
+	elif i >= 50 and i < 100:
+		if dist < 0:
+			return '-2'
+		else:
+			return '2'
 	elif i >= 100 and i < 150:
-		if dist < 0:
-			return '-2'
-		else:
-			return '2'
-	elif i >= 150 and i < 200:
-		if dist < 0:
-			return '-2'
-		else:
-			return '2'
-	elif i >= 200 and i < 250:
 		if dist < 0:
 			return '-3'
 		else:
 			return '3'
-	elif i >= 250 and i < 300:
+	elif i >= 150 and i < 200:
 		if dist < 0:
 			return '-4'
 		else:
 			return '4'
-	elif i >= 300 and i < 350:
+	elif i >= 200 and i < 250:
 		if dist < 0:
 			return '-5'
 		else:
 			return '5'
-	elif i >= 350 and i < 400:
+	elif i >= 250 and i < 300:
 		if dist < 0:
 			return '-6'
 		else:
 			return '6'
-	elif i >= 400 and i < 450:
+	elif i >= 300 and i < 350:
 		if dist < 0:
 			return '-7'
 		else:
 			return '7'
-	elif i >= 450 and i < 500:
+	elif i >= 350 and i < 400:
 		if dist < 0:
 			return '-8'
 		else:
 			return '8'
-	elif i >= 500 and i < 550:
+	elif i >= 400 and i < 450:
 		if dist < 0:
 			return '-9'
 		else:
 			return '9'
-	elif i >= 550 and i < 600:
+	elif i >= 450 and i < 500:
 		if dist < 0:
 			return '-10'
 		else:
 			return '10'
-	else:
+	elif i >= 500 and i < 550:
 		if dist < 0:
 			return '-11'
 		else:
 			return '11'
+	else:
+		if dist < 0:
+			return '-12'
+		else:
+			return '12'
