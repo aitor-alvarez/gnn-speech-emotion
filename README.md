@@ -16,5 +16,5 @@ The IEMOCAP /train directory should follow this structure:
  - hap
  - neu
   
-  
+Where each emotion label is a directory.
 
