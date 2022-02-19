@@ -11,10 +11,10 @@ python preprocess.py -a '~/IEMOCAP/train/'
 
 The IEMOCAP /train directory should follow this structure:
 
-  -ang
-  -sad
-  -hap
-  -neu
+ - ang
+ - sad
+ - hap
+ - neu
   
   
 
