@@ -1,5 +1,4 @@
-# gnn-speech-emotion
-## Prosody-Aware Graph Neural Networks for Robust Speech Emotion Recognition
+# Prosody-Aware Graph Neural Networks for Robust Speech Emotion Recognition
 
 ### Create prosodic patterns trianing set
 
