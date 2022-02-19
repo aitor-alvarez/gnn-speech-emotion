@@ -9,14 +9,12 @@ python preprocess.py -a '~/IEMOCAP/train/'
 
 ```
 
-The IEMOCAP directory should follow this structure:
+The IEMOCAP /train directory should follow this structure:
 
--train
   -ang
   -sad
   -hap
   -neu
   
--test
   
 
