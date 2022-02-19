@@ -1,7 +1,17 @@
-def create_dictionary(path):
+import os
+
+#Create a dictionary of unique patterns in a directory of pattern files
+def create_nodes_dictionary(path):
     patterns = read_directory(path)
     dictionary =[]
-    vocab = [dictionary.append(p) for p in patterns if p not in dictionary]
+    vocab = [dictionary.append(p) for lista in patterns for p in lista if p not in dictionary]
+    return dictionary
+
+
+def create_dictionary(patterns_file):
+    pats = read_file(patterns_file)
+    dictionary = []
+    vocab = [dictionary.append(p) for p in pats if p not in dictionary]
     return dictionary
 
 
@@ -10,6 +20,7 @@ def read_file(patterns):
     p = p.readlines()
     pat = parse_patterns(p)
     return pat
+
 
 def parse_patterns(p):
     patterns = []
@@ -21,6 +32,17 @@ def parse_patterns(p):
     return patterns
 
 
-def read_directory(path_file):
-    all_patterns = read_file(path_file)
+def read_directory(path):
+    all_patterns = [read_file(path+f) for f in os.listdir(path) if f.endswith('_maximal.txt')]
     return all_patterns
+
+
+def process_patterns(pat):
+    docs=[]
+    for doc in pat:
+        docu=[]
+        for d in doc:
+            #docu.append('_'.join(d[0]))
+            docu.append(d[0])
+        docs.append(docu)
+    return docs

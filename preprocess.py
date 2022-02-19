@@ -20,8 +20,9 @@ def main():
 		build_corpus(args.build_corpus)
 	if args.generate_dataset:
 		subs = os.listdir(args.generate_dataset)
+		print("Generating patterns...")
 		for s in subs:
-			if '.DS_Store' not in s:
+			if os.path.isdir(args.generate_dataset+s):
 				print(s)
 				generate_dataset(args.generate_dataset, s)
 	else:

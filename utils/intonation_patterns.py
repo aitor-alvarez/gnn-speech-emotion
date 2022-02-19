@@ -7,6 +7,7 @@ import pandas as pd
 from utils.process_file import create_dictionary
 import uuid
 from utils.MaximaPatterns import MaximalPatterns
+from utils.graph_utils import create_graph
 
 #Functions to extract speech utterances and intonation contours
 
@@ -60,6 +61,7 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, audio_dir+files[i])
 
 
+
 def slice_audio(slice_from, slice_to, path, name, audio_file):
 	audio = AudioSegment.from_wav(audio_file)
 	try:
@@ -81,7 +83,7 @@ def get_f0_praat(audio_dir):
 #return a list of intervallic distances between F0 points expressed in cents
 def get_interval_contour(fqs):
 	contours = []
-	inds=[]
+	inds= []
 	for f in fqs:
 		contour = []
 		ind = []
