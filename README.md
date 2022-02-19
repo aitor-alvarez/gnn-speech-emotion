@@ -5,7 +5,7 @@
 
 Execute the following command:
 ```
-python  python preprocess.py -a '~/IEMOCAP/train/'
+python preprocess.py -a '~/IEMOCAP/train/'
 
 ```
 
