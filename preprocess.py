@@ -9,7 +9,7 @@ def main():
 	                    help='Initial arrangement of the dataset by emotion. Provide the root path for the IEMOCAP dataset.')
 
 	parser.add_argument('-a', '--generate_dataset', type=str, default = None,
-	                        help='The audio directory where the training set for a given emotion is located.')
+	                        help='The audio directory where the training set by emotion is located.')
 
 	parser.add_argument('-l', '--label', type=str, default = None,
 	                        help='Dataset label')
@@ -21,7 +21,9 @@ def main():
 	if args.generate_dataset:
 		subs = os.listdir(args.generate_dataset)
 		for s in subs:
-			generate_dataset(args.generate_dataset, s)
+			if '.DS_Store' not in s:
+				print(s)
+				generate_dataset(args.generate_dataset, s)
 	else:
 		print("Please provide the arguments needed. Check the help -h to see the arguments available.")
 
