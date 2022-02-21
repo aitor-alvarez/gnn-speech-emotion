@@ -48,7 +48,8 @@ def generate_dataset(audio_dir, emo):
 
 
 #Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
-# contained in the dictionary
+# contained in the dictionary. At the same time it saves the co-occurences of patterns in an adjacency list to
+#create a graph.
 def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio_dir):
 	for i, c in enumerate(contours):
 		adj = []
@@ -185,8 +186,11 @@ def get_interval(dist):
 			return '12'
 
 
-def create_graph(adj):
+def create_graph(adj, type='complete'):
 	G = nx.Graph()
 	G.add_nodes_from(adj)
-	G=nx.complete_graph(G)
+	if type == 'complete':
+		G=nx.complete_graph(G)
+	elif type == 'cycle':
+		G = nx.cycle_graph(G)
 	return G
