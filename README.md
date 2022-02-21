@@ -1,6 +1,6 @@
 # Prosody-Aware Graph Neural Networks for Robust Speech Emotion Recognition
 
-### Create prosodic patterns training set
+### Create prosodic patterns training set and graph for each utterance
 
 Execute the following command:
 ```
@@ -15,5 +15,5 @@ The IEMOCAP /train directory should follow this structure:
  - hap
  - neu
   
-Where each emotion label is a subdirectory of the train/ directory.
+Where each emotion label is a subdirectory of the train/ directory. The ouput results in a dataset of audio segments corresponding with each of the maximal patterns. A graph per utterance is also created. Audio of patterns and graphs will be stored in the directory patterns/ that should exist in the root directory.
 
