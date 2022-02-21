@@ -74,7 +74,6 @@ def slice_audio(slice_from, slice_to, path, name, audio_file):
 		seg = audio[slice_from * 1000:slice_to * 1100]
 		seg.set_channels(2)
 		seg.export(path+name, format="wav", bitrate="192k")
-		print(path+name)
 	except:
 		print("NO")
 
