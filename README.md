@@ -1,6 +1,6 @@
 # Prosody-Aware Graph Neural Networks for Robust Speech Emotion Recognition
 
-### Create prosodic patterns training setand graph for each utterance
+### Create prosodic patterns training set and graph for each utterance
 
 Execute the following command:
 ```
