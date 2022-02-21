@@ -8,18 +8,20 @@ from utils.process_file import create_dictionary
 import uuid
 from utils.MaximaPatterns import MaximalPatterns
 import networkx as nx
+from torch_geometric.utils import from_networkx
+import torch
 
 #Functions to extract speech utterances and intonation contours
 
 #IEMOCAP labels used
-emotions=['ang', 'hap', 'neu', 'sad']
+emotions=['ang', 'hap', 'neu', 'sad', 'exc']
 
 #We build the corpus by creating directories by emotion to be used by torch dataloader
 def build_corpus(iemocap_dir):
 	subpath='/Train/'
 	csv_files = [csv for csv in os.listdir(iemocap_dir+subpath) if csv.endswith('.csv')]
+	print("Creating the corpus...")
 	for c in csv_files:
-		print("Start creating the corpus...")
 		df= pd.read_csv(iemocap_dir+subpath + '/' +c)
 		for row in df.itertuples():
 			if row[4] in emotions:
@@ -64,7 +66,8 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, audio_dir+files[i])
 					adj.append(name)
 		graph = create_graph(adj)
-		nx.write_gpickle(graph, path+filename+ '.pickle')
+		graph = from_networkx(graph)
+		torch.save(graph, path+filename+ '.pt')
 
 
 
@@ -185,5 +188,5 @@ def get_interval(dist):
 def create_graph(adj):
 	G = nx.Graph()
 	G.add_nodes_from(adj)
-	nx.complete_graph(G)
+	G=nx.complete_graph(G)
 	return G
