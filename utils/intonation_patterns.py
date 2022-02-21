@@ -7,7 +7,7 @@ import pandas as pd
 from utils.process_file import create_dictionary
 import uuid
 from utils.MaximaPatterns import MaximalPatterns
-from utils.graph_utils import create_graph
+import networkx as nx
 
 #Functions to extract speech utterances and intonation contours
 
@@ -32,12 +32,13 @@ def build_corpus(iemocap_dir):
 	print("corpus completed")
 
 
+#Create the dataset of patterns, extracting the audio and graphs for each emotional utterance
 def generate_dataset(audio_dir, emo):
 	fqs, files, pitches = get_f0_praat(audio_dir+emo+'/')
 	contours, inds = get_interval_contour(fqs)
-	pattern_length = 6
+	pattern_length = 8
 	filename = 'patterns/'+emo
-	Gapbide(contours, 10, 0, 0, pattern_length, filename).run()
+	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
 	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/'+emo+'_maximal.txt')
 	path_out_audio='patterns/'+emo+'/'
@@ -47,18 +48,23 @@ def generate_dataset(audio_dir, emo):
 #Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
 # contained in the dictionary
 def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio_dir):
-	for d in dictionary:
-		for i, c in enumerate(contours):
+	for i, c in enumerate(contours):
+		adj = []
+		filename = files[i].replace('.wav', '_')
+		for d in dictionary:
 			if len(d) > len(c):
 				continue
 			else:
 				sub = find_sublist(d, c)
 			if sub:
 				for s in sub:
-					name = files[i].replace('.wav', '_')+str(uuid.uuid4())+'.wav'
+					name = filename+str(uuid.uuid4())+'.wav'
 					ini = inds[i][s[0]][0]+1
 					end = inds[i][s[1]][0]+1
 					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, audio_dir+files[i])
+					adj.append(name)
+		graph = create_graph(adj)
+		nx.write_gpickle(graph, path+filename+ '.pickle')
 
 
 
@@ -68,6 +74,7 @@ def slice_audio(slice_from, slice_to, path, name, audio_file):
 		seg = audio[slice_from * 1000:slice_to * 1100]
 		seg.set_channels(2)
 		seg.export(path+name, format="wav", bitrate="192k")
+		print(path+name)
 	except:
 		print("NO")
 
@@ -174,3 +181,10 @@ def get_interval(dist):
 			return '-12'
 		else:
 			return '12'
+
+
+def create_graph(adj):
+	G = nx.Graph()
+	G.add_nodes_from(adj)
+	nx.complete_graph(G)
+	return G

@@ -11,8 +11,6 @@ def main():
 	parser.add_argument('-a', '--generate_dataset', type=str, default = None,
 	                        help='The audio directory where the training set by emotion is located.')
 
-	parser.add_argument('-l', '--label', type=str, default = None,
-	                        help='Dataset label')
 
 	args = parser.parse_args()
 
@@ -26,7 +24,7 @@ def main():
 				print(s)
 				generate_dataset(args.generate_dataset, s)
 	else:
-		print("Please provide the arguments needed. Check the help -h to see the arguments available.")
+		print("Please provide the arguments needed. Check the help command -h to see the arguments available.")
 
 
 

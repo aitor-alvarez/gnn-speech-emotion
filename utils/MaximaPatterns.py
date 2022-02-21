@@ -16,7 +16,7 @@ class MaximalPatterns:
 
     def execute(self):
         patterns = self.read_files()
-        pstr = [''.join(p[0]) for p in patterns]
+        pstr = [''.join(p) for p in patterns]
         pstr.sort(key=len, reverse=True)
         not_max=[]
         for p, k in combinations(pstr, 2):
@@ -39,7 +39,7 @@ class MaximalPatterns:
             out = el[:el.find (']') + 1]
             out = out.replace ('[', '').replace(']', '').replace("'", '').replace(',', ' ')
             out = out.split()
-            patterns.append((out, int(el[el.find(']') + 1:].replace('\n',''))))
+            patterns.append(out)
         return patterns
 
 
@@ -49,5 +49,3 @@ class MaximalPatterns:
         for p in range(0, len(patterns)):
             file_.write(str(patterns[p]) + "\n")
         file_.close()
-
-
