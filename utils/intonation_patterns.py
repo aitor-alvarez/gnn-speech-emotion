@@ -40,8 +40,8 @@ def generate_dataset(audio_dir, emo):
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 8
 	filename = 'patterns/'+emo
-	#Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
-	#MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
+	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
+	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/'+emo+'_maximal.txt')
 	path_out_audio='patterns/'+emo+'/'
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
