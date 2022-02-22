@@ -40,8 +40,8 @@ def generate_dataset(audio_dir, emo):
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 8
 	filename = 'patterns/'+emo
-	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
-	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
+	#Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
+	#MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/'+emo+'_maximal.txt')
 	path_out_audio='patterns/'+emo+'/'
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
@@ -54,6 +54,11 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 	for i, c in enumerate(contours):
 		adj = []
 		filename = files[i].replace('.wav', '_')
+		path2 = path+ files[i].replace('.wav', '/')
+		if os.path.exists(path2):
+			pass
+		else:
+			os.mkdir(path2)
 		for d in dictionary:
 			if len(d) > len(c):
 				continue
@@ -64,12 +69,11 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 					name = filename+str(uuid.uuid4())+'.wav'
 					ini = inds[i][s[0]][0]+1
 					end = inds[i][s[1]][0]+1
-					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path, name, audio_dir+files[i])
+					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path2, name, audio_dir+files[i])
 					adj.append(name)
 		graph = create_graph(adj)
 		graph = from_networkx(graph)
-		torch.save(graph, path+filename+ '.pt')
-
+		torch.save(graph, path2+filename+ '.pt')
 
 
 def slice_audio(slice_from, slice_to, path, name, audio_file):
@@ -79,7 +83,7 @@ def slice_audio(slice_from, slice_to, path, name, audio_file):
 		seg.set_channels(2)
 		seg.export(path+name, format="wav", bitrate="192k")
 	except:
-		print("NO")
+		print(f"ERROR PROCESSING AUDIO FILE: {name}")
 
 
 #extract f0 from Parselmouth Praat function

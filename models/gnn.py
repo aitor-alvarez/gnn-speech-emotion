@@ -10,7 +10,7 @@ class GCNN(nn.Module):
 		super().__init__()
 		self.gconv1 = GCNConv(in_features, 512)
 		self.gconv2 = GCNConv(512, num_classes)
-		self.relu = nn.ReLU()
+		self.relu = nn.LeakyReLU()
 
 
 	def forward(self, in_feat, adj):

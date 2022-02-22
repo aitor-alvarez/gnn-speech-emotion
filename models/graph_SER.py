@@ -13,3 +13,10 @@ class Prosodic_Graph(nn.Module):
 		x = self.acoustic_model(audio_file)
 		x = self.GNN(x, adj)
 		return x
+
+	def train(self, train_batch_loader):
+		return self
+
+	def predict(self, test_batch_loader):
+		return self
+
