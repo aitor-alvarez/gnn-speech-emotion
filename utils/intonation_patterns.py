@@ -40,8 +40,8 @@ def generate_dataset(audio_dir, emo):
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 8
 	filename = 'patterns/'+emo
-	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
-	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
+	#Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
+	#MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/'+emo+'_maximal.txt')
 	path_out_audio='patterns/'+emo+'/'
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
@@ -52,7 +52,7 @@ def generate_dataset(audio_dir, emo):
 #create a graph.
 def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio_dir):
 	for i, c in enumerate(contours):
-		adj = []
+		G = nx.Graph()
 		filename = files[i].replace('.wav', '_')
 		path2 = path+ files[i].replace('.wav', '/')
 		if os.path.exists(path2):
@@ -70,8 +70,8 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 					ini = inds[i][s[0]][0]+1
 					end = inds[i][s[1]][0]+1
 					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path2, name, audio_dir+files[i])
-					adj.append(name)
-		graph = create_graph(adj)
+					G.add_node(name, y=name)
+		graph = create_graph(G)
 		graph = from_networkx(graph)
 		torch.save(graph, path2+filename+ '.pt')
 
@@ -190,11 +190,10 @@ def get_interval(dist):
 			return '12'
 
 
-def create_graph(adj, type='complete'):
-	G = nx.Graph()
-	G.add_nodes_from(adj)
+def create_graph(G, type='complete'):
 	if type == 'complete':
-		G=nx.complete_graph(G)
+		e=nx.complete_graph(G)
 	elif type == 'cycle':
-		G = nx.cycle_graph(G)
+		e = nx.cycle_graph(G)
+	G.add_edges_from(e.edges)
 	return G
