@@ -13,12 +13,14 @@ class GCNN(nn.Module):
 		self.relu = nn.LeakyReLU()
 
 
-	def forward(self, in_feat, adj):
-		x = self.conv1(in_feat, adj)
+	def forward(self, in_feat, graph):
+		x, edge_index, = in_feat, graph.edge_index
+		x = self.conv1(x, edge_index)
 		x = self.relu(x)
 		x = F.dropout(x, training=self.training)
-		x = self.conv2(x, adj)
-		return F.log_softmax(x, dim=1)
+		x = self.conv2(x, edge_index)
+		x = F.log_softmax(x, dim=1)
+		return x
 
 
 

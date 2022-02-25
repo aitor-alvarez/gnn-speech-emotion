@@ -35,7 +35,7 @@ class ResidualBLSTM(nn.Module):
             nn.ReLU()
         )
         self.layer2 = self.make_layer(block, 128, layers[0])
-        self.lstm = nn.LSTM(6804, 1134, batch_first=True, bidirectional=True)
+        self.lstm = nn.LSTM(5355, 1134, batch_first=True, bidirectional=True)
         self.flatten = nn.Flatten()
 
 

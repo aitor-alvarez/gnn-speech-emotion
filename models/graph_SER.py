@@ -8,14 +8,12 @@ class Prosodic_Graph(nn.Module):
 		self.acoustic_model = acoustic_model
 		self.GNN = graph_model
 
-	#Input of the architecture is a dataset of speech files and a network adjacency list.
-	def forward(self, audio_file, adj):
-		x = self.acoustic_model(audio_file)
-		x = self.GNN(x, adj)
+	#Input of the architecture is a dataset of speech files and a graph data object.
+	def forward(self, audio_batch, graph):
+		x = self.acoustic_model(audio_batch)
+		x = self.GNN(x, graph)
 		return x
 
-	def train(self, train_batch_loader):
-		return self
 
 	def predict(self, test_batch_loader):
 		return self

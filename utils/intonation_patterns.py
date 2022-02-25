@@ -40,8 +40,8 @@ def generate_dataset(audio_dir, emo):
 	contours, inds = get_interval_contour(fqs)
 	pattern_length = 8
 	filename = 'patterns/'+emo
-	#Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
-	#MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
+	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
+	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/'+emo+'_maximal.txt')
 	path_out_audio='patterns/'+emo+'/'
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
@@ -70,7 +70,7 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 					ini = inds[i][s[0]][0]+1
 					end = inds[i][s[1]][0]+1
 					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path2, name, audio_dir+files[i])
-					G.add_node(name, y=name)
+					G.add_node(name, y=path2+name)
 		graph = create_graph(G)
 		graph = from_networkx(graph)
 		torch.save(graph, path2+filename+ '.pt')
