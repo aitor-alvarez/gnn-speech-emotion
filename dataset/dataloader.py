@@ -1,10 +1,12 @@
 import torch
 import os
+import torchaudio
 
 #Load graphs and audio samples
-def train_data_loader(data_path):
+def data_loader(data_path):
 		subs = os.listdir(data_path)
 		graphs=[]
+		max_len=[]
 		for sub in subs:
 			if os.path.isdir(data_path + sub+'/'):
 				subdir = os.listdir(data_path + sub+'/')
@@ -14,16 +16,17 @@ def train_data_loader(data_path):
 						for f in files:
 							if f.endswith('.pt'):
 								graphs.append(torch.load(data_path + sub + '/' + sd + '/' + f))
-		return graphs
+							elif f.endswith('.wav'):
+								max_len.append(torchaudio.load(data_path + sub + '/' + sd + '/' + f)[0].shape[1])
+		return graphs, max(max_len)
 
 
 
-def padding_tensor(sequences):
+def padding_tensor(sequences, max_len):
     """
     input=list of tensors
     """
     num = len(sequences)
-    max_len = max([s.size(1) for s in sequences])
     out_dims = (num, max_len)
     out_tensor = sequences[0].data.new(*out_dims).fill_(0)
     for i, tensor in enumerate(sequences):
