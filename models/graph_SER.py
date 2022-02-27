@@ -1,4 +1,5 @@
 from torch import nn
+from torch import functional as F
 
 #Combining acoustic representation learning with GNN.
 
@@ -17,4 +18,5 @@ class Prosodic_Graph(nn.Module):
 
 	def predict(self, test_batch_loader):
 		return self
+
 
