@@ -22,7 +22,6 @@ class GCNN(nn.Module):
 		x = self.gconv2(x, graph.edge_index)
 		x = F.dropout(x, training=self.training)
 		out = self.fc(x)
-		print(out.shape)
 		return out
 
 

@@ -25,7 +25,9 @@ if __name__ == '__main__':
 	parser.add_argument('-b', '--batch_size', type=int, default= 32,
 	                    help='Batch size')
 
-	parser.add_argument('-e', '--num_epochs', type=int, default=None,
+	parser.add_argument('-e', '--num_epochs', type=int, default=40,
 	                    help='Number of epochs')
 
-	exec(parser.data_path, parser.batch_size, parser.num_epochs)
+	args = parser.parse_args()
+
+	exec(args.data_path, args.batch_size, args.num_epochs)

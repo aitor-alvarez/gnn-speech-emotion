@@ -62,8 +62,6 @@ def train(model, device, trainloader, max_len, num_epochs):
 			# Track the accuracy
 			total = labels.size(0)
 			_, predicted = torch.max(out.data, 1)
-			print(predicted)
-			print(labels)
 			correct = (predicted == labels).sum().item()
 			acc_list.append(correct / total)
 			print(acc_list)
