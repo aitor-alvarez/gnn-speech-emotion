@@ -15,7 +15,11 @@ def data_loader(data_path):
 						files = os.listdir(data_path + sub+'/'+sd+'/')
 						for f in files:
 							if f.endswith('.pt'):
-								graphs.append(torch.load(data_path + sub + '/' + sd + '/' + f))
+								g=torch.load(data_path + sub + '/' + sd + '/' + f)
+								if g.num_nodes>1:
+									graphs.append(g)
+								else:
+									continue
 							elif f.endswith('.wav'):
 								max_len.append(torchaudio.load(data_path + sub + '/' + sd + '/' + f)[0].shape[1])
 		return graphs, max(max_len)

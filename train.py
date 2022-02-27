@@ -13,7 +13,7 @@ def train(model, device, trainloader, max_len, num_epochs):
 	model.to(device)
 	model.train()
 
-	#criterion = torch.nn.BCEWithLogitsLoss()
+	checkpoint_path = 'gnn.pt'
 	criterion = torch.nn.CrossEntropyLoss()
 	epochs_stop = 5
 	min_loss = np.Inf
@@ -23,18 +23,14 @@ def train(model, device, trainloader, max_len, num_epochs):
 	loss_list = []
 	acc_list = []
 
-	#Graph model
-
-	g_model = GCNN()
-	g_model.train()
 
 	optimizer = torch.optim.Adam([
-		dict(params=model.parameters(), weight_decay=5e-4),
-		dict(params=g_model.gconv1.parameters(), weight_decay=5e-4),
-		dict(params=g_model.gconv2.parameters(), weight_decay=0)
-	], lr=0.01)
+		dict(params=model.acoustic_model.parameters(), weight_decay=5e-4),
+		dict(params=model.GNN.gconv1.parameters(), weight_decay=5e-4),
+		dict(params=model.GNN.gconv2.parameters(), weight_decay=0)
+	], lr=0.001)
 
-	for epoch in range(1, num_epochs+1):
+	for epoch in range(1, num_epochs):
 		for i, data in enumerate(trainloader, 0):
 			optimizer.zero_grad()
 			try:
@@ -48,28 +44,36 @@ def train(model, device, trainloader, max_len, num_epochs):
 			labels.to(device)
 			x_embedding = model.acoustic_model(audio)
 			data.x = x_embedding
-			out = g_model(data)
-			loss1 = criterion(out, labels)
-			loss = F.nll_loss(out, labels)
+			out = model.GNN(data)
+			loss = criterion(out, labels)
 
-			loss_list.append(loss.item())
-			if loss < min_loss:
-				min_loss = loss
 			# Backprop and perform Adam optimization
 			loss.backward()
 			optimizer.step()
 
+			loss_list.append(loss.item())
+			if loss < min_loss:
+				min_loss = loss
+
 			# Track the accuracy
 			total = labels.size(0)
 			_, predicted = torch.max(out.data, 1)
+			print(predicted)
 			correct = (predicted == labels).sum().item()
 			acc_list.append(correct / total)
-			print(acc_list)
 
 			if (i + 1) % 2:
 				print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
-				      .format(epoch + 1, num_epochs, i + 1, total_step, loss.item(),
+				      .format(epoch , num_epochs, i + 1, total_step, loss.item(),
 				              (correct / total) * 100))
+
+			torch.save({
+				'epoch': epoch,
+				'model_state_dict': model.state_dict(),
+				'optimizer_state_dict': optimizer.state_dict(),
+				'loss': loss,
+			}, checkpoint_path)
+
 			if min_loss < epoch_min_loss:
 				epoch_min_loss = min_loss
 				no_improve = 0
@@ -83,7 +87,7 @@ def train(model, device, trainloader, max_len, num_epochs):
 			write_file('accuracy.txt', acc_list)
 			write_file('loss.txt', loss_list)
 
-'''
+
 ##Test Model###
 	model.eval()
 	correct = 0
@@ -91,11 +95,8 @@ def train(model, device, trainloader, max_len, num_epochs):
 	y = []
 	y_predicted = []
 	with torch.no_grad():
-		for labels, sounds in testloader:
-			if torch.cuda.is_available():
-				labels = labels.cuda()
-				sounds = sounds.cuda()
-			outputs = model(sounds)
+		for data in testloader:
+			outputs = model(data)
 			_, predicted = torch.max(outputs.data, 1)
 			total += labels.size(0)
 			correct += (predicted == labels).sum().item()
@@ -104,8 +105,3 @@ def train(model, device, trainloader, max_len, num_epochs):
 
 	print('Accuracy: %d %%' % (100 * correct / total))
 	write_file('accuracy_test.txt', [(100 * correct / total)])
-
-
-'''
-
-
