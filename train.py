@@ -24,6 +24,7 @@ def train(model, device, trainloader, max_len, num_epochs):
 	loss_list = []
 	acc_list = []
 	start_epoch=1
+	checkpoint_path = 'gnn.pt'
 
 	#Check if a checkpoint exists to continue training
 	if os.path.isfile('gnn.pt'):
