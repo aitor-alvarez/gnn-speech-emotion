@@ -1,5 +1,5 @@
 from torch import nn
-from torch_geometric.nn import GCNConv, GINConv, GCN2Conv
+from torch_geometric.nn import GCNConv, GINConv
 from torch.functional import F
 from torch.nn import Linear
 
@@ -20,6 +20,5 @@ class GCNN(nn.Module):
 		x = self.relu(x)
 		x = F.dropout(x, training=self.training)
 		x = self.gconv2(x, graph.edge_index)
-		#out = self.fc(x)
 		out = F.softmax(x, dim=1)
 		return out
