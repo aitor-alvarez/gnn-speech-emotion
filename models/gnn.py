@@ -9,8 +9,8 @@ class GCNN(nn.Module):
 
 	def __init__(self):
 		super().__init__()
-		self.gconv1 = GCNConv(128, 64)
-		self.gconv2 = GCNConv(64, 64)
+		self.gconv1 = GCNConv(256, 64)
+		self.gconv2 = GCNConv(64, 4)
 		self.relu = nn.LeakyReLU()
 		self.fc = Linear(64, 4)
 
@@ -20,13 +20,6 @@ class GCNN(nn.Module):
 		x = self.relu(x)
 		x = F.dropout(x, training=self.training)
 		x = self.gconv2(x, graph.edge_index)
-		x = F.dropout(x, training=self.training)
-		out = self.fc(x)
+		#out = self.fc(x)
+		out = F.softmax(x, dim=1)
 		return out
-
-
-
-
-
-
-

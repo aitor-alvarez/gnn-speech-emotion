@@ -16,7 +16,7 @@ def data_loader(data_path):
 						for f in files:
 							if f.endswith('.pt'):
 								g=torch.load(data_path + sub + '/' + sd + '/' + f)
-								if g.num_nodes>1:
+								if g.num_nodes>5:
 									graphs.append(g)
 								else:
 									continue

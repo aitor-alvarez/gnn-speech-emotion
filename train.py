@@ -2,18 +2,19 @@ import torch
 import torchaudio
 from dataset.dataloader import padding_tensor
 import numpy as np
-from models.gnn import GCNN
-from torch.functional import F
+import os
 
 
 emo ={'ang':0, 'hap':1, 'neu':2, 'sad':3}
 
 
 def train(model, device, trainloader, max_len, num_epochs):
-	model.to(device)
-	model.train()
+	optimizer = torch.optim.Adam([
+		dict(params=model.acoustic_model.parameters(), weight_decay=5e-4),
+		dict(params=model.GNN.gconv1.parameters(), weight_decay=5e-4),
+		dict(params=model.GNN.gconv2.parameters(), weight_decay=0)
+	], lr=0.001)
 
-	checkpoint_path = 'gnn.pt'
 	criterion = torch.nn.CrossEntropyLoss()
 	epochs_stop = 5
 	min_loss = np.Inf
@@ -22,21 +23,22 @@ def train(model, device, trainloader, max_len, num_epochs):
 	total_step = len(trainloader)
 	loss_list = []
 	acc_list = []
+	start_epoch=1
 
+	#Check if a checkpoint exists to continue training
+	if os.path.isfile('gnn.pt'):
+		checkpoint = torch.load('gnn.pt')
+		model.load_state_dict(checkpoint['model_state_dict'])
+		optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+		start_epoch = checkpoint['epoch']
+		loss = checkpoint['loss']
 
-	optimizer = torch.optim.Adam([
-		dict(params=model.acoustic_model.parameters(), weight_decay=5e-4),
-		dict(params=model.GNN.gconv1.parameters(), weight_decay=5e-4),
-		dict(params=model.GNN.gconv2.parameters(), weight_decay=0)
-	], lr=0.001)
+	model.train()
 
-	for epoch in range(1, num_epochs):
+	for epoch in range(start_epoch, num_epochs):
 		for i, data in enumerate(trainloader, 0):
 			optimizer.zero_grad()
-			try:
-				audio = [torchaudio.load(file)[0] for a in data.y for file in a]
-			except:
-				continue
+			audio = [torchaudio.load(file)[0] for a in data.y for file in a]
 			audio = padding_tensor(audio, max_len)
 			labels = [emo[d[d.find('/')+1:d.find('/')+4]] for a in data.y for d in a]
 			labels=torch.as_tensor(labels)
@@ -58,8 +60,8 @@ def train(model, device, trainloader, max_len, num_epochs):
 			# Track the accuracy
 			total = labels.size(0)
 			_, predicted = torch.max(out.data, 1)
-			print(predicted)
 			correct = (predicted == labels).sum().item()
+			print(correct / total)
 			acc_list.append(correct / total)
 
 			if (i + 1) % 2:

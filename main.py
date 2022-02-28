@@ -11,6 +11,7 @@ from models.speech_representations import ResidualBLSTM, Resblock
 def exec(data_path, batch_size=10, num_epochs=40):
 	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	model = Prosodic_Graph(ResidualBLSTM(Resblock, [2]), GCNN())
+	model.to(device)
 	graphs, max_len = data_loader(data_path)
 	trainloader= DataLoader(graphs, batch_size=batch_size, shuffle=True)
 	train(model, device, trainloader, max_len, num_epochs)

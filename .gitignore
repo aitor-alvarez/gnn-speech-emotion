@@ -5,3 +5,4 @@ venv/
 patterns/
 .DS_Store
 *graph_file*
+*.pt
