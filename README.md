@@ -1,6 +1,6 @@
 # Prosody-Aware Subgraph Embeddings for Robust Speech Emotion Recognition
 
-### Create prosodic patterns training set and graph for each utterance
+### Create prosodic patterns training set and subgraph for each utterance
 
 Execute the following command:
 ```
