@@ -1,5 +1,5 @@
 import argparse
-from utils.intonation_patterns import generate_dataset, build_corpus
+from utils.intonation_patterns import create_subgraphs , build_corpus
 import os
 
 def main():
@@ -18,11 +18,11 @@ def main():
 		build_corpus(args.build_corpus)
 	if args.generate_dataset:
 		subs = os.listdir(args.generate_dataset)
-		print("Generating patterns...")
+		print("Generating subgraphs...")
 		for s in subs:
 			if os.path.isdir(args.generate_dataset+s):
 				print(s)
-				generate_dataset(args.generate_dataset, s)
+				create_subgraphs(args.generate_dataset, s)
 	else:
 		print("Please provide the arguments needed. Check the help command -h to see the arguments available.")
 

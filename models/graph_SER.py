@@ -16,7 +16,4 @@ class Prosodic_Graph(nn.Module):
 		return x
 
 
-	def predict(self, test_batch_loader):
-		return self
-
 

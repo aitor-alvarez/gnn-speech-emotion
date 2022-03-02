@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import parselmouth
-from pydub import  AudioSegment
+from pydub import AudioSegment
 from utils.gapbide import Gapbide
 import pandas as pd
 from utils.process_file import create_dictionary
@@ -47,6 +47,29 @@ def generate_dataset(audio_dir, emo):
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
 
 
+###Creates a graph based on the prosodic similarity of the speech utterances.
+def create_graph(dictionary, contours, files, pitches, inds, path, audio_dir):
+	pat_names=[]
+	node_list=[]
+	for d in dictionary:
+		pat_names.append(d)
+		nodes = []
+		for i, c in enumerate(contours):
+			nodename = files[i]
+			if len(d) > len(c):
+				continue
+			else:
+				sub = find_sublist(d, c)
+			if sub:
+				print(sub)
+				nodes.append(nodename)
+		node_list.append(nodes)
+	sheet = pd.ExcelWriter('patterns/pat_nodes.xlsx', engine='xlsxwriter')
+
+
+
+
+
 #Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
 # contained in the dictionary. At the same time it saves the co-occurences of patterns in an adjacency list to
 #create a graph.
@@ -71,9 +94,10 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 					end = inds[i][s[1]][0]+1
 					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path2, name, audio_dir+files[i])
 					G.add_node(name, y=path2+name)
-		graph = create_graph(G)
-		graph = from_networkx(graph)
-		torch.save(graph, path2+filename+ '.pt')
+		if G.number_of_nodes()>0:
+			graph = create_graph(G)
+			graph = from_networkx(graph)
+			torch.save(graph, path2+filename+ '.pt')
 
 
 def slice_audio(slice_from, slice_to, path, name, audio_file):
@@ -190,7 +214,7 @@ def get_interval(dist):
 			return '12'
 
 
-def create_graph(G, type='complete'):
+def create_graph(G, type='cycle'):
 	if type == 'complete':
 		e=nx.complete_graph(G)
 	elif type == 'cycle':

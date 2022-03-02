@@ -37,7 +37,7 @@ class ResidualBLSTM(nn.Module):
         self.layer2 = self.make_layer(block, 128, layers[0])
         self.lstm = nn.LSTM(27279, 512, batch_first=True, bidirectional=True)
         self.flatten = nn.Flatten()
-        self.fc = nn.Linear(131072, 256)
+        self.fc = nn.Linear(131072, 128)
 
 
     def make_layer(self, block, out_channels, blocks, stride=1):
@@ -60,11 +60,3 @@ class ResidualBLSTM(nn.Module):
         flat_out = self.flatten(lstm_out)
         fc = self.fc(flat_out)
         return fc
-
-'''
-class StackedLSTM(nn.Module):
-    def __init__(self):
-
-    self.l1 = nn.LSTM(27279, 1134, batch_first=True, bidirectional=True)
-    self.l2 = nn.LSTM(1134,  512, batch_first=True, bidirectional=True)
-'''

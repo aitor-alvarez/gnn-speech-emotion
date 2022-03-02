@@ -50,6 +50,15 @@ def train(model, device, trainloader, max_len, num_epochs):
 			out = model.GNN(data)
 			loss = criterion(out, labels)
 
+			# Track the accuracy
+			total = labels.size(0)
+			_, predicted = torch.max(out.data, 1)
+			correct = (predicted == labels).sum().item()
+			print(labels)
+			print(predicted)
+			print(correct / total)
+			acc_list.append(correct / total)
+
 			# Backprop and perform Adam optimization
 			loss.backward()
 			optimizer.step()
@@ -57,13 +66,6 @@ def train(model, device, trainloader, max_len, num_epochs):
 			loss_list.append(loss.item())
 			if loss < min_loss:
 				min_loss = loss
-
-			# Track the accuracy
-			total = labels.size(0)
-			_, predicted = torch.max(out.data, 1)
-			correct = (predicted == labels).sum().item()
-			print(correct / total)
-			acc_list.append(correct / total)
 
 			if (i + 1) % 2:
 				print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'

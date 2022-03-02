@@ -9,7 +9,7 @@ class GCNN(nn.Module):
 
 	def __init__(self):
 		super().__init__()
-		self.gconv1 = GCNConv(256, 64)
+		self.gconv1 = GCNConv(128, 64)
 		self.gconv2 = GCNConv(64, 4)
 		self.relu = nn.LeakyReLU()
 		self.fc = Linear(64, 4)
