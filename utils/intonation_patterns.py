@@ -4,7 +4,7 @@ import parselmouth
 from pydub import AudioSegment
 from utils.gapbide import Gapbide
 import pandas as pd
-from utils.process_file import create_dictionary
+from utils.process_file import create_dictionary, create_nodes_dictionary
 import uuid
 from utils.MaximaPatterns import MaximalPatterns
 import networkx as nx
@@ -36,8 +36,7 @@ def build_corpus(iemocap_dir):
 
 #Create the dataset of patterns, extracting the audio and graphs for each emotional utterance
 def generate_dataset(audio_dir, emo):
-	fqs, files, pitches = get_f0_praat(audio_dir+emo+'/')
-	contours, inds = get_interval_contour(fqs)
+	contours, files, pitches, inds= create_contours(audio_dir, emo)
 	pattern_length = 8
 	filename = 'patterns/'+emo
 	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
@@ -47,12 +46,18 @@ def generate_dataset(audio_dir, emo):
 	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
 
 
+def create_contours(audio_dir, emo):
+	fqs, files, pitches = get_f0_praat(audio_dir + emo + '/')
+	contours, inds = get_interval_contour(fqs)
+	return contours, files, pitches, inds
+
+
 ###Creates a graph based on the prosodic similarity of the speech utterances.
-def create_graph(dictionary, contours, files, pitches, inds, path, audio_dir):
-	pat_names=[]
+def generate_graph(contours, files):
+	dictionary = create_nodes_dictionary('patterns/')
+	G = nx.Graph()
 	node_list=[]
 	for d in dictionary:
-		pat_names.append(d)
 		nodes = []
 		for i, c in enumerate(contours):
 			nodename = files[i]
@@ -61,13 +66,25 @@ def create_graph(dictionary, contours, files, pitches, inds, path, audio_dir):
 			else:
 				sub = find_sublist(d, c)
 			if sub:
-				print(sub)
 				nodes.append(nodename)
+		G.add_nodes_from(nodes)
+		sg= create_graph(G)
+		G.add_edges_from(sg.edges)
 		node_list.append(nodes)
-	sheet = pd.ExcelWriter('patterns/pat_nodes.xlsx', engine='xlsxwriter')
+	graph = add_edge_attributes(G, nodes)
+	gp= from_networkx(graph)
+	torch.save(gp, 'patterns/graph.pt')
 
 
-
+def add_edge_attributes(G, nodes):
+	for e in G.edges:
+		for n in nodes:
+			if e[0] and e[1] in n:
+				if 'weight' in G[e[0]][e[1]]:
+					G[e[0]][e[1]]['weight'] + 1
+				else:
+					nx.set_edge_attributes(G, {e: {"weight": 1.0}})
+	return G
 
 
 #Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
@@ -215,9 +232,7 @@ def get_interval(dist):
 
 
 def create_graph(G, type='cycle'):
-	if type == 'complete':
-		e=nx.complete_graph(G)
-	elif type == 'cycle':
+	if type == 'cycle':
 		e = nx.cycle_graph(G)
 	G.add_edges_from(e.edges)
 	return G
