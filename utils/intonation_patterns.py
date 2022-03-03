@@ -69,9 +69,9 @@ def generate_graph(contours, files):
 				nodes.append(nodename)
 		G.add_nodes_from(nodes)
 		sg= create_graph(G)
-		G.add_edges_from(sg.edges)
+		G.add_edges_from(sg.edges, weight=1.00)
 		node_list.append(nodes)
-	graph = add_edge_attributes(G, nodes)
+	graph = add_edge_attributes(G, node_list)
 	gp= from_networkx(graph)
 	torch.save(gp, 'patterns/graph.pt')
 
@@ -81,9 +81,7 @@ def add_edge_attributes(G, nodes):
 		for n in nodes:
 			if e[0] and e[1] in n:
 				if 'weight' in G[e[0]][e[1]]:
-					G[e[0]][e[1]]['weight'] + 1
-				else:
-					nx.set_edge_attributes(G, {e: {"weight": 1.0}})
+					G[e[0]][e[1]]['weight'] +=1
 	return G
 
 

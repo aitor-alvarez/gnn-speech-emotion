@@ -25,7 +25,6 @@ def data_loader(data_path):
 		return graphs, max(max_len)
 
 
-
 def padding_tensor(sequences, max_len):
     """
     input=list of tensors
