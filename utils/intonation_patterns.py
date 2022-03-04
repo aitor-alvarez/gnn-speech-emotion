@@ -67,8 +67,10 @@ def generate_graph(contours, files):
 				sub = find_sublist(d, c)
 			if sub:
 				nodes.append(nodename)
-		G.add_nodes_from(nodes)
-		sg= create_graph(G)
+				G.add_node(nodename, node_id=nodename, y=nodename[nodename.rfind('/')-3:nodename.rfind('/')])
+		g = nx.Graph()
+		g.add_nodes_from(nodes)
+		sg= create_graph(g)
 		G.add_edges_from(sg.edges, weight=1.00)
 		node_list.append(nodes)
 	graph = add_edge_attributes(G, node_list)
@@ -127,8 +129,8 @@ def slice_audio(slice_from, slice_to, path, name, audio_file):
 
 #extract f0 from Parselmouth Praat function
 def get_f0_praat(audio_dir):
-	files = [f for f in os.listdir(audio_dir) if f.endswith('.wav')]
-	pitches = [parselmouth.Sound(audio_dir + f).to_pitch(pitch_floor=75.0, pitch_ceiling=650.0) for f in files]
+	files = [audio_dir+f for f in os.listdir(audio_dir) if f.endswith('.wav')]
+	pitches = [parselmouth.Sound(f).to_pitch(pitch_floor=75.0, pitch_ceiling=650.0) for f in files]
 	fqs = [pitch.kill_octave_jumps().selected_array['frequency'] for pitch in pitches]
 	return fqs, files, pitches
 
