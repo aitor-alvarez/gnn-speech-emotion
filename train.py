@@ -39,9 +39,9 @@ def train(model, device, trainloader, max_len, num_epochs):
 	for epoch in range(start_epoch, num_epochs):
 		for i, data in enumerate(trainloader, 0):
 			optimizer.zero_grad()
-			audio = [torchaudio.load(file)[0] for a in data.y for file in a]
+			audio = [torchaudio.load(file)[0] for a in data.node_id for file in a]
 			audio = padding_tensor(audio, max_len)
-			labels = [emo[d[d.find('/')+1:d.find('/')+4]] for a in data.y for d in a]
+			labels = data.y
 			labels=torch.as_tensor(labels)
 			audio.to(device)
 			labels.to(device)

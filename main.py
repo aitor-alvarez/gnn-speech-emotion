@@ -13,7 +13,7 @@ def exec(graph_path, batch_size=32, num_epochs=40):
 	model = Prosodic_Graph(ResidualBLSTM(Resblock, [2]), GCNN())
 	model.to(device)
 	graphs = torch.load(graph_path)
-	max_len = max([torchaudio.load(g.node_id)[0].shape[1] for g in graphs ])
+	max_len = max([torchaudio.load(g)[0].shape[1] for g in graphs.node_id ])
 	trainloader= DataLoader(graphs, batch_size=batch_size, shuffle=True)
 	train(model, device, trainloader, max_len, num_epochs)
 
