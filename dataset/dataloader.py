@@ -27,6 +27,25 @@ def data_loader(data_path):
 		return graphs, max(max_len)
 
 
+def audio_loader(audio_path):
+	emo = {'ang': 0, 'hap': 1, 'neu': 2, 'sad': 3}
+	subs = os.listdir(audio_path)
+	samples = []
+	max_len = []
+	labels=[]
+	for sub in subs:
+		if os.path.isdir(audio_path + sub + '/'):
+			subdir = os.listdir(audio_path + sub + '/')
+			for sd in subdir:
+				if os.path.isdir(audio_path + sub + '/' + sd + '/'):
+					files = os.listdir(audio_path + sub + '/' + sd + '/')
+					for f in files:
+						if f.endswith('.wav'):
+							labels.append(emo[sub])
+							samples.append(torchaudio.load(audio_path + sub + '/' + sd + '/' + f)[0])
+							max_len.append(torchaudio.load(audio_path + sub + '/' + sd + '/' + f)[0].shape[1])
+	return samples, torch.tensor(labels), max(max_len)
+
 
 def sample_subgraphs(graph, node_ids):
 	subgraphs=[]

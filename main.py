@@ -3,7 +3,8 @@ from train import train
 import torch
 import torchaudio
 from models.gnn import GCNN
-from utils.intonation_patterns import generate_graph
+from models.speech_representations import ResidualBLSTM, Resblock
+from pretrain import pretrain
 
 
 def exec(graph_path, speech_model_path, batch_size=64, num_epochs=40):
@@ -47,5 +48,8 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	if args.audio_path:
+		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+		model = ResidualBLSTM(Resblock, [2])
+		pretrain(model, device)
 
 	exec(args.data_path, args.speech_model, args.batch_size, args.num_epochs)

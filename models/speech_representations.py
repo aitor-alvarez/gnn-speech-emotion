@@ -38,6 +38,7 @@ class ResidualBLSTM(nn.Module):
         self.lstm = nn.LSTM(73395, 128, batch_first=True, bidirectional=True)
         self.flatten = nn.Flatten()
         self.fc = nn.Linear(32768, 128)
+        self.classify = nn.Linear(128, 4)
 
 
     def make_layer(self, block, out_channels, blocks, stride=1):
@@ -59,4 +60,5 @@ class ResidualBLSTM(nn.Module):
         lstm_out, hidden = self.lstm(out)
         flat_out = self.flatten(lstm_out)
         fc = self.fc(flat_out)
-        return fc
+        classify = self.classify(fc)
+        return classify
