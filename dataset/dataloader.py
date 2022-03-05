@@ -1,6 +1,8 @@
 import torch
 import os
 import torchaudio
+from torch_geometric.utils import k_hop_subgraph, subgraph
+import numpy as np
 
 #Load graphs and audio samples
 def data_loader(data_path):
@@ -36,13 +38,23 @@ def sample_subgraphs(graph, node_ids):
 
 
 def padding_tensor(sequences, max_len):
-    """
-    input=list of tensors
-    """
-    num = len(sequences)
-    out_dims = (num, max_len)
-    out_tensor = sequences[0].data.new(*out_dims).fill_(0)
-    for i, tensor in enumerate(sequences):
-        length = tensor.size(1)
-        out_tensor[i, :length] = tensor
-    return out_tensor
+		"""
+		input=list of tensors
+		"""
+		num = len(sequences)
+		out_dims = (num, max_len)
+		out_tensor = sequences[0].data.new(*out_dims).fill_(0)
+		for i, tensor in enumerate(sequences):
+				length = tensor.size(1)
+				out_tensor[i, :length] = tensor
+		return out_tensor
+
+
+def get_subgraph(graph_data, hop=None, type='sub', batch_size=None):
+	node_ids= list(np.random.choice(list(range(graph_data.num_nodes)), batch_size, replace=False))
+	if type == 'sub':
+		sg = subgraph(node_ids, graph_data.edge_index, graph_data.weight)
+		return sg, sg[0].unique()
+	elif hop is not None:
+		sg = k_hop_subgraph(node_ids, hop, graph_data.edge_index)
+		return sg

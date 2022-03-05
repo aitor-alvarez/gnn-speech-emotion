@@ -1,6 +1,6 @@
 import torch
 import torchaudio
-from dataset.dataloader import padding_tensor
+from dataset.dataloader import padding_tensor, get_subgraph
 import numpy as np
 import os
 
@@ -8,7 +8,7 @@ import os
 emo ={'ang':0, 'hap':1, 'neu':2, 'sad':3}
 
 
-def train(model, device, trainloader, max_len, num_epochs):
+def train(model, device, max_len, num_epochs, batch_size):
 	optimizer = torch.optim.Adam([
 		dict(params=model.acoustic_model.parameters(), weight_decay=5e-4),
 		dict(params=model.GNN.gconv1.parameters(), weight_decay=5e-4),
@@ -20,7 +20,6 @@ def train(model, device, trainloader, max_len, num_epochs):
 	min_loss = np.Inf
 	epoch_min_loss = np.Inf
 	no_improve = 0
-	total_step = len(trainloader)
 	loss_list = []
 	acc_list = []
 	start_epoch=1
@@ -37,17 +36,24 @@ def train(model, device, trainloader, max_len, num_epochs):
 	model.train()
 
 	for epoch in range(start_epoch, num_epochs):
-		for i, data in enumerate(trainloader, 0):
+		trainloader, ids = get_subgraph(graph_path, batch_size=batch_size)
+		for i in enumerate(trainloader, 0):
 			optimizer.zero_grad()
-			audio = [torchaudio.load(file)[0] for a in data.node_id for file in a]
+			inds = [int(d) for d in range(data.edge_index.min() , data.edge_index.max()+1)]
+			print(inds)
+			print(data.edge_index)
+			audio =[torchaudio.load(data.node_id[i])[0] for i in inds ]
 			audio = padding_tensor(audio, max_len)
-			labels = data.y
+			labels = [emo[data.y[i]] for i in inds]
 			labels=torch.as_tensor(labels)
 			audio.to(device)
 			labels.to(device)
 			x_embedding = model.acoustic_model(audio)
-			data.x = x_embedding
-			out = model.GNN(data)
+			print(x_embedding.shape)
+			assert data.edge_index.max() < data.num_nodes
+			print(data.edge_index.max())
+			print(x_embedding.size(0))
+			out = model.GNN(x_embedding, data.edge_index)
 			loss = criterion(out, labels)
 
 			# Track the accuracy

@@ -15,10 +15,11 @@ class GCNN(nn.Module):
 		self.fc = Linear(64, 4)
 
 
-	def forward(self, graph):
-		x = self.gconv1(graph.x, graph.edge_index)
+	def forward(self, x_embeddings, edge_index):
+		print(x_embeddings.shape)
+		x = self.gconv1(x_embeddings, edge_index)
 		x = self.relu(x)
 		x = F.dropout(x, training=self.training)
-		x = self.gconv2(x, graph.edge_index)
+		x = self.gconv2(x, edge_index)
 		out = F.softmax(x, dim=1)
 		return out
