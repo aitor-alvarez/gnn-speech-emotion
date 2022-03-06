@@ -30,7 +30,10 @@ def get_speech_representations(speech_model, data):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 
-	parser.add_argument('-p', '--audio_path', type=str, default='iemocap/',
+	parser.add_argument('-ptrain', '--audio_path1', type=str, default='iemocap/train/',
+	                    help='Pretrain the model. Provide IEMOCAP data path.')
+
+	parser.add_argument('-ptest', '--audio_path2', type=str, default='iemocap/test/',
 	                    help='Pretrain the model. Provide IEMOCAP data path.')
 
 	parser.add_argument('-d', '--data_path', type=str, default = 'patterns/',
@@ -47,9 +50,11 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 
-	if args.audio_path:
+	if args.audio_path1 and args.audio_path2:
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		model = ResidualBLSTM(Resblock, [2])
-		pretrain(model, device)
-
-	exec(args.data_path, args.speech_model, args.batch_size, args.num_epochs)
+		pretrain(model, device, args.num_epochs, args.batch_size, args.audio_path1, args.audio_path2)
+	elif args.data_path:
+		exec(args.data_path, args.speech_model, args.batch_size, args.num_epochs)
+	else:
+		print("please provide valid arguments. See -h for help.")

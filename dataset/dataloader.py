@@ -1,3 +1,5 @@
+from typing import List
+
 import torch
 import os
 import torchaudio
@@ -36,14 +38,12 @@ def audio_loader(audio_path):
 	for sub in subs:
 		if os.path.isdir(audio_path + sub + '/'):
 			subdir = os.listdir(audio_path + sub + '/')
-			for sd in subdir:
-				if os.path.isdir(audio_path + sub + '/' + sd + '/'):
-					files = os.listdir(audio_path + sub + '/' + sd + '/')
-					for f in files:
-						if f.endswith('.wav'):
-							labels.append(emo[sub])
-							samples.append(torchaudio.load(audio_path + sub + '/' + sd + '/' + f)[0])
-							max_len.append(torchaudio.load(audio_path + sub + '/' + sd + '/' + f)[0].shape[1])
+			files = [f for f in subdir]
+			for f in files:
+				if f.endswith('.wav'):
+					labels.append(emo[sub])
+					samples.append(torchaudio.load(audio_path + sub +  '/' + f)[0])
+					max_len.append(torchaudio.load(audio_path + sub + '/' + f)[0].shape[1])
 	return samples, torch.tensor(labels), max(max_len)
 
 
@@ -53,7 +53,6 @@ def sample_subgraphs(graph, node_ids):
 		sub=graph[id]
 		subgraphs.append(sub)
 	return subgraphs
-
 
 
 def padding_tensor(sequences, max_len):
