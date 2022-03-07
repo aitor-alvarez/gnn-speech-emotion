@@ -1,7 +1,7 @@
 from torch import nn
-from torch_geometric.nn import GCNConv, GINConv
 from torch.functional import F
 from torch.nn import Linear
+from torch_geometric.nn import GCNConv, GINConv
 
 
 #GCNN baseline

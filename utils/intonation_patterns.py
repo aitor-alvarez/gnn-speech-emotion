@@ -1,4 +1,5 @@
 import os
+import torch
 import numpy as np
 import parselmouth
 from pydub import AudioSegment
@@ -9,7 +10,7 @@ import uuid
 from utils.MaximaPatterns import MaximalPatterns
 import networkx as nx
 from torch_geometric.utils import from_networkx
-import torch
+
 
 #Functions to extract speech utterances and intonation contours
 

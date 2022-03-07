@@ -1,6 +1,6 @@
+import torch
 import argparse
 from train import train
-import torch
 import torchaudio
 from models.gnn import GCNN
 from models.speech_representations import ResidualBLSTM, Resblock
