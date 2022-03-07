@@ -2,9 +2,17 @@
 
 ### Create subgraphs based on the prosodic content of the utterances
 
-Execute the following command:
+Execute the following commands to generate the prosodic patterns for train and test sets:
 ```
 python preprocess.py -a '~/IEMOCAP/train/'
+
+python preprocess.py -a '~/IEMOCAP/test/'
+
+```
+Generate graph with the following command:
+
+```
+python preprocess.py -g '~/IEMOCAP/train/'
 
 ```
 
