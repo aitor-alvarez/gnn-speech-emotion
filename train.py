@@ -92,8 +92,8 @@ def train(model, device, max_len, num_epochs, batch_size, graph):
 			else:
 				continue
 			loss_list.append('-----' + str(epoch) + '-----')
-			write_file('accuracy.txt', acc_list)
-			write_file('loss.txt', loss_list)
+			write_file('gnn_accuracy.txt', acc_list)
+			write_file('gnn_loss.txt', loss_list)
 
 
 ##Test Model###
@@ -112,4 +112,5 @@ def train(model, device, max_len, num_epochs, batch_size, graph):
 			y.append(labels.numpy())
 
 	print('Accuracy: %d %%' % (100 * correct / total))
-	write_file('accuracy_test.txt', [(100 * correct / total)])
+	write_file('gnn_accuracy_test.txt', [(100 * correct / total)])
+	model.save('gnn_model.pt')

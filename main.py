@@ -31,10 +31,10 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 
 	parser.add_argument('-ptrain', '--audio_path1', type=str, default='iemocap/train/',
-	                    help='Pretrain the model. Provide IEMOCAP data path.')
+	                    help='Pretrain the model. Provide IEMOCAP training data path.')
 
 	parser.add_argument('-ptest', '--audio_path2', type=str, default='iemocap/test/',
-	                    help='Pretrain the model. Provide IEMOCAP data path.')
+	                    help='Pretrain the model. Provide IEMOCAP test data path.')
 
 	parser.add_argument('-d', '--data_path', type=str, default = 'patterns/',
                         help='Data path to graph file.')

@@ -29,8 +29,11 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 	train_data, train_labels, max_len = audio_loader(train_path)
 	train_data = padding_tensor(train_data, max_len)
 	train_data = TensorDataset(train_data, train_labels)
-	test_data, test_labels, max_len = audio_loader(test_path)
+	test_data, test_labels, _ = audio_loader(test_path)
+	test_data = padding_tensor(test_data, max_len)
+	test_data = TensorDataset(test_data, test_labels)
 	train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
+	test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
 	total_step = len(train_dataloader)
 
 	model.train()
@@ -95,8 +98,10 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 	y = []
 	y_predicted = []
 	with torch.no_grad():
-		for data in testloader:
-			outputs = model(data)
+		for data in test_dataloader:
+			audio = data[0]
+			labels = data[1]
+			outputs = model(audio)
 			_, predicted = torch.max(outputs.data, 1)
 			total += labels.size(0)
 			correct += (predicted == labels).sum().item()
@@ -105,3 +110,4 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 
 	print('Accuracy: %d %%' % (100 * correct / total))
 	write_file('accuracy_test.txt', [(100 * correct / total)])
+	model.save('rblstm_model.pt')
