@@ -1,5 +1,5 @@
 import torch
-from dataset.dataloader import padding_tensor, audio_loader
+from dataset.dataloader import padding_tensor, audio_loader, write_file
 import numpy as np
 import os
 from torch.optim.lr_scheduler import ExponentialLR
@@ -21,7 +21,7 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 
 	#Check if a checkpoint exists to continue training
 	if os.path.isfile('speech_representation.pt'):
-		checkpoint = torch.load('gnn.pt')
+		checkpoint = torch.load('speech_representation.pt')
 		model.load_state_dict(checkpoint['model_state_dict'])
 		optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 		start_epoch = checkpoint['epoch']

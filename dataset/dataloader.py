@@ -1,5 +1,3 @@
-from typing import List
-
 import torch
 import os
 import torchaudio
@@ -76,3 +74,10 @@ def get_subgraph(graph_data, hop=None, type='sub', batch_size=None):
 	elif hop is not None:
 		sg = k_hop_subgraph(node_ids, hop, graph_data.edge_index)
 		return sg
+
+
+def write_file(file, list):
+    file_out = open(file, 'w')
+    for l in list:
+        file_out.write(str(l)+"\n")
+    file_out.close()
