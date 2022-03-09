@@ -10,11 +10,9 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 	optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 	scheduler = ExponentialLR(optimizer, gamma=0.9)
 	criterion = torch.nn.CrossEntropyLoss()
-	epochs_stop = 5
-	min_loss = np.Inf
-	epoch_min_loss = np.Inf
+	epochs_stop = 3
+	epoch_min_loss = None
 	no_improve = 0
-	loss_list = []
 	acc_list = []
 	start_epoch=1
 	checkpoint_path = 'speech_representation.pt'
@@ -40,6 +38,9 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 	model.train()
 
 	for epoch in range(start_epoch, num_epochs):
+		epoch_loss=[]
+		# Scheduler decay
+		scheduler.step()
 		for i, data in enumerate(train_dataloader, 0):
 			optimizer.zero_grad()
 			audio =data[0]
@@ -53,18 +54,16 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 			total = labels.size(0)
 			_, predicted = torch.max(out.data, 1)
 			correct = (predicted == labels).sum().item()
-			print(correct / total)
 			acc_list.append(correct / total)
 
 			# Backprop and perform Adam optimization
 			loss.backward()
 			optimizer.step()
 
-			loss_list.append(loss.item())
-			if loss < min_loss:
-				min_loss = loss
+			### Add loss per iteration to check later in epoch ###
+			epoch_loss.append(loss)
 
-			if (i + 1) % 2:
+			if (i + 1) % 10:
 				print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
 				      .format(epoch , num_epochs, i + 1, total_step, loss.item(),
 				              (correct / total) * 100))
@@ -76,21 +75,19 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 				'loss': loss,
 			}, checkpoint_path)
 
-			if min_loss < epoch_min_loss:
-				epoch_min_loss = min_loss
-				no_improve = 0
-			else:
-				no_improve += 1
-			if no_improve == epochs_stop:
-				break
-			else:
-				continue
-			loss_list.append('-----' + str(epoch) + '-----')
-			write_file('accuracy.txt', acc_list)
-			write_file('loss.txt', loss_list)
 
-		#Scheduler after epoch
-		scheduler.step()
+		### Epoch check ###
+		e_loss = sum(epoch_loss)/len(epoch_loss)
+		if epoch_min_loss == None:
+			epoch_min_loss = e_loss
+		elif e_loss < epoch_min_loss:
+			epoch_min_loss = e_loss
+			no_improve = 0
+		else:
+			no_improve += 1
+		if no_improve == epochs_stop:
+			break
+
 
 ##Test Model###
 	model.eval()
@@ -111,4 +108,3 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 
 	print('Accuracy: %d %%' % (100 * correct / total))
 	write_file('accuracy_test.txt', [(100 * correct / total)])
-	model.save('rblstm_model.pt')
