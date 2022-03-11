@@ -8,8 +8,8 @@ def train(model, graph, num_epochs):
 	optimizer = torch.optim.Adam([
 		dict(params=model.gconv1.parameters(), weight_decay=5e-4),
 		dict(params=model.gconv2.parameters(), weight_decay=0)
-	], lr=0.001)
-	scheduler = ExponentialLR(optimizer, gamma=0.9)
+	], lr=0.01)
+	scheduler = ExponentialLR(optimizer, gamma=0.92)
 	criterion = torch.nn.CrossEntropyLoss()
 	epochs_stop = 20
 	min_loss = None
@@ -32,7 +32,8 @@ def train(model, graph, num_epochs):
 		print(epoch)
 		optimizer.zero_grad()
 		labels = graph.y
-		out = model(graph.x, graph.edge_index)
+		weights = graph.edge_weight
+		out = model(graph.x, graph.edge_index, weights)
 		loss = criterion(out, labels)
 
 		# Track the accuracy
@@ -70,10 +71,11 @@ def train(model, graph, num_epochs):
 
 def test(model_path, model, graph):
 	labels = graph.y
+	weights = graph.edge_weight
 	total = labels.size(0)
 	checkpoint = torch.load(model_path)
 	model.load_state_dict(checkpoint['model_state_dict'])
-	out = model(graph.x, graph.edge_index)
+	out = model(graph.x, graph.edge_index, weights)
 	_, predicted = torch.max(out.data, 1)
 	correct = (predicted == labels).sum().item()
 	print(correct / total)

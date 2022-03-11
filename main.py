@@ -10,7 +10,7 @@ import os
 from torch.utils.data import DataLoader
 
 
-def exec(graph_path='patterns/train/graph.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
+def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
 	if complete == True:
 		graph = torch.load(graph_path)
 		graph = complete_graph_with_speech_features(speech_model_path, graph)
@@ -36,6 +36,7 @@ def complete_graph_with_speech_features(speech_model_path, graph):
 	speech_model.eval()
 	graph.x = get_speech_representations(speech_model, graph.node_id)
 	graph.y = torch.as_tensor([emo[y] for y in graph.y])
+	graph.edge_weight = graph.weight
 	return graph
 
 
