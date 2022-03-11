@@ -9,9 +9,9 @@ def train(model, graph, num_epochs):
 		dict(params=model.gconv1.parameters(), weight_decay=5e-4),
 		dict(params=model.gconv2.parameters(), weight_decay=0)
 	], lr=0.01)
-	scheduler = ExponentialLR(optimizer, gamma=0.92)
+	scheduler = ExponentialLR(optimizer, gamma=0.9)
 	criterion = torch.nn.CrossEntropyLoss()
-	epochs_stop = 20
+	epochs_stop = 10
 	min_loss = None
 	no_improve = 0
 	acc_list = []

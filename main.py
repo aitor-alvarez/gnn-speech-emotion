@@ -2,7 +2,7 @@ import torch
 import argparse
 from node_train import train, test
 import torchaudio
-from models.gnn import GCNN
+from models.gnn import GCNN, AttGCNN
 from models.speech_representations import ResidualBLSTM, Resblock
 from pretrain import pretrain
 from dataset.dataloader import padding_tensor
@@ -18,7 +18,7 @@ def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretra
 	else:
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		graph = torch.load(graph_path)
-		model = GCNN()
+		model = AttGCNN()
 		model.to(device)
 		train(model, graph, num_epochs)
 		test('gnn.pt', model, torch.load('patterns/test/graph.pt'))
