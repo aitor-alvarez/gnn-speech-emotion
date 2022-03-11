@@ -1,5 +1,5 @@
 import argparse
-from utils.intonation_patterns import generate_graph , build_corpus, create_contours
+from utils.intonation_patterns import generate_graph , build_corpus, create_contours, generate_dataset
 import os
 from itertools import chain
 
@@ -9,8 +9,8 @@ def main():
 	parser.add_argument('-b', '--build_corpus', type=str, default=None,
 	                    help='Initial arrangement of the dataset by emotion. Provide the root path for the IEMOCAP dataset.')
 
-	parser.add_argument('-a', '--generate_dataset', type=str, default = None,
-	                        help='The audio directory where the training set by emotion is located.')
+	parser.add_argument('-p', '--generate_patterns', type=str, default = None,
+	                        help='The audio directory where the IEMOCAP dataset is located.')
 
 	parser.add_argument('-g', '--generate_graph', type=str, default = None,
 	                        help='IEMOCAP dataset directory.')
@@ -20,6 +20,14 @@ def main():
 
 	if args.build_corpus:
 		build_corpus(args.build_corpus)
+	if args.generate_patterns:
+		subs = os.listdir(args.generate_patterns)
+		print("Generating patterns...")
+		for s in subs:
+			if os.path.isdir(args.generate_patterns + s):
+				print(s)
+				generate_dataset(args.generate_patterns, s)
+
 	if args.generate_graph:
 		subs = os.listdir(args.generate_graph)
 		print("Generating graph...")

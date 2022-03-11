@@ -36,15 +36,17 @@ def build_corpus(iemocap_dir):
 
 
 #Create the dataset of patterns, extracting the audio and graphs for each emotional utterance
-def generate_dataset(audio_dir, emo):
+def generate_dataset(audio_dir, emo, train=False):
+	if train == True: sub='train/'
+	if train == False: sub='test/'
 	contours, files, pitches, inds= create_contours(audio_dir, emo)
 	pattern_length = 8
-	filename = 'patterns/'+emo
+	filename = 'patterns/'+sub+emo
 	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
 	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
-	dictionary = create_dictionary('patterns/'+emo+'_maximal.txt')
-	path_out_audio='patterns/'+emo+'/'
-	create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
+	dictionary = create_dictionary('patterns/'+sub+emo+'_maximal.txt')
+	path_out_audio='patterns/'+sub+emo+'/'
+	#create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
 
 
 def create_contours(audio_dir, emo):
@@ -55,7 +57,7 @@ def create_contours(audio_dir, emo):
 
 ###Creates a graph based on the prosodic similarity of the speech utterances.
 def generate_graph(contours, files):
-	dictionary = create_nodes_dictionary('patterns/')
+	dictionary = create_nodes_dictionary('patterns/test/')
 	G = nx.Graph()
 	node_list=[]
 	for d in dictionary:

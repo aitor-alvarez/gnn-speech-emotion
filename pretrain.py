@@ -18,11 +18,12 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 	checkpoint_path = 'speech_representation.pt'
 
 	#Check if a checkpoint exists to continue training
-	if os.path.isfile('speech_representation.pt'):
-		checkpoint = torch.load('speech_representation.pt')
+	if os.path.isfile('pretrained/speech_representation.pt'):
+		checkpoint = torch.load('pretrained/speech_representation.pt')
 		model.load_state_dict(checkpoint['model_state_dict'])
 		optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 		start_epoch = checkpoint['epoch']
+		loss = checkpoint['loss']
 
 	train_data, train_labels, max_len = audio_loader(train_path)
 	test_data, test_labels, max_len2 = audio_loader(test_path)
@@ -39,8 +40,7 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 
 	for epoch in range(start_epoch, num_epochs):
 		epoch_loss=[]
-		# Scheduler decay
-		scheduler.step()
+
 		for i, data in enumerate(train_dataloader, 0):
 			optimizer.zero_grad()
 			audio =data[0]
@@ -63,6 +63,9 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 			### Add loss per iteration to check later in epoch ###
 			epoch_loss.append(loss)
 
+			# Scheduler decay
+			scheduler.step()
+
 			if (i + 1) % 10:
 				print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Accuracy: {:.2f}%'
 				      .format(epoch , num_epochs, i + 1, total_step, loss.item(),
@@ -74,6 +77,8 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 				'optimizer_state_dict': optimizer.state_dict(),
 				'loss': loss,
 			}, checkpoint_path)
+
+			torch.save(model.state_dict(), 'speech_model.pt')
 
 
 		### Epoch check ###

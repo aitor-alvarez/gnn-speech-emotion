@@ -16,7 +16,6 @@ class GCNN(nn.Module):
 
 
 	def forward(self, x_embeddings, edge_index):
-		print(x_embeddings.shape)
 		x = self.gconv1(x_embeddings, edge_index)
 		x = self.relu(x)
 		x = F.dropout(x, training=self.training)
