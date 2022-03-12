@@ -6,7 +6,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 import wandb
 
 
-def train(model, graph, num_epochs):
+def train(model, train_loader, graph, num_epochs):
 	wandb.init(project="gnn-emotion", entity="arronte")
 	lr = 0.005
 
@@ -24,7 +24,7 @@ def train(model, graph, num_epochs):
 	min_loss = None
 	no_improve = 0
 	acc_list = []
-
+	epoch_min_loss = None
 	start_epoch=1
 	checkpoint_path = 'gnn.pt'
 
@@ -39,45 +39,53 @@ def train(model, graph, num_epochs):
 	model.train()
 
 	for epoch in range(start_epoch, num_epochs):
-		optimizer.zero_grad()
-		labels = graph.y
-		weights = graph.edge_weight
-		out = model(graph.x, graph.edge_index, weights)
-		loss = F.nll_loss(out, labels)
+		epoch_loss=[]
+		for graph in train_loader:
+			optimizer.zero_grad()
+			labels = graph.y
+			weights = graph.edge_weight
+			out = model(graph.x, graph.edge_index, weights)
+			loss = F.nll_loss(out, labels)
 
-		# Track the accuracy
-		total = labels.size(0)
-		_, predicted = torch.max(out.data, 1)
-		correct = (predicted == labels).sum().item()
-		acc_list.append(correct / total)
+			# Track the accuracy
+			total = labels.size(0)
+			_, predicted = torch.max(out.data, 1)
+			correct = (predicted == labels).sum().item()
+			acc_list.append(correct / total)
 
-		# Backprop and perform Adam optimization
-		loss.backward()
-		optimizer.step()
+			# Backprop and perform Adam optimization
+			loss.backward()
+			optimizer.step()
+			print(loss)
+			epoch_loss.append(loss)
 
-		# Scheduler decay
-		#scheduler.step()
+			# Scheduler decay
+			#scheduler.step()
 
-		#torch.save({
-		#	'epoch': epoch,
-		#	'model_state_dict': model.state_dict(),
-		#	'optimizer_state_dict': optimizer.state_dict(),
-		#	'loss': loss,
-		#}, checkpoint_path)
+			#torch.save({
+			#	'epoch': epoch,
+			#	'model_state_dict': model.state_dict(),
+			#	'optimizer_state_dict': optimizer.state_dict(),
+			#	'loss': loss,
+			#}, checkpoint_path)
 
-		if min_loss == None:
-			min_loss = loss
-		elif loss < min_loss:
-			min_loss = loss
+		### Epoch check ###
+		e_loss = sum(epoch_loss) / len(epoch_loss)
+		if epoch_min_loss == None:
+			epoch_min_loss = e_loss
+		elif e_loss < epoch_min_loss:
+			epoch_min_loss = e_loss
 			no_improve = 0
 		else:
 			no_improve += 1
 		if no_improve == epochs_stop:
 			break
 
-		#Visualization
+		# Visualization
 		wandb.log({"loss": loss})
-		#wandb.watch(model)
+		# wandb.watch(model)
+
+
 
 
 def test(model, graph):
