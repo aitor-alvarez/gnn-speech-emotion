@@ -1,20 +1,30 @@
 import torch
+from torch.functional import F
 from dataset.dataloader import get_subgraph, write_file
 import os
 from torch.optim.lr_scheduler import ExponentialLR
+import wandb
 
 
 def train(model, graph, num_epochs):
-	optimizer = torch.optim.Adam([
-		dict(params=model.gconv1.parameters(), weight_decay=5e-4),
-		dict(params=model.gconv2.parameters(), weight_decay=0)
-	], lr=0.01)
-	scheduler = ExponentialLR(optimizer, gamma=0.9)
-	criterion = torch.nn.CrossEntropyLoss()
-	epochs_stop = 10
+	wandb.init(project="gnn-emotion", entity="arronte")
+	lr = 0.005
+
+	wandb.config = {
+		"learning_rate": lr,
+		"epochs": num_epochs
+	}
+
+	optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=5e-4)
+	#scheduler = ExponentialLR(optimizer, gamma=0.9)
+	#criterion = torch.nn.CrossEntropyLoss()
+	#criterion = F.nll_loss()
+
+	epochs_stop = 5
 	min_loss = None
 	no_improve = 0
 	acc_list = []
+
 	start_epoch=1
 	checkpoint_path = 'gnn.pt'
 
@@ -29,34 +39,31 @@ def train(model, graph, num_epochs):
 	model.train()
 
 	for epoch in range(start_epoch, num_epochs):
-		print(epoch)
 		optimizer.zero_grad()
 		labels = graph.y
 		weights = graph.edge_weight
 		out = model(graph.x, graph.edge_index, weights)
-		loss = criterion(out, labels)
+		loss = F.nll_loss(out, labels)
 
 		# Track the accuracy
 		total = labels.size(0)
 		_, predicted = torch.max(out.data, 1)
 		correct = (predicted == labels).sum().item()
-		print(correct / total)
 		acc_list.append(correct / total)
 
 		# Backprop and perform Adam optimization
 		loss.backward()
 		optimizer.step()
-		print(loss)
 
 		# Scheduler decay
-		scheduler.step()
+		#scheduler.step()
 
-		torch.save({
-			'epoch': epoch,
-			'model_state_dict': model.state_dict(),
-			'optimizer_state_dict': optimizer.state_dict(),
-			'loss': loss,
-		}, checkpoint_path)
+		#torch.save({
+		#	'epoch': epoch,
+		#	'model_state_dict': model.state_dict(),
+		#	'optimizer_state_dict': optimizer.state_dict(),
+		#	'loss': loss,
+		#}, checkpoint_path)
 
 		if min_loss == None:
 			min_loss = loss
@@ -68,14 +75,16 @@ def train(model, graph, num_epochs):
 		if no_improve == epochs_stop:
 			break
 
+		#Visualization
+		wandb.log({"loss": loss})
+		#wandb.watch(model)
 
-def test(model_path, model, graph):
+
+def test(model, graph):
 	labels = graph.y
 	weights = graph.edge_weight
 	total = labels.size(0)
-	checkpoint = torch.load(model_path)
-	model.load_state_dict(checkpoint['model_state_dict'])
 	out = model(graph.x, graph.edge_index, weights)
 	_, predicted = torch.max(out.data, 1)
 	correct = (predicted == labels).sum().item()
-	print(correct / total)
+	print((correct / total)*100)

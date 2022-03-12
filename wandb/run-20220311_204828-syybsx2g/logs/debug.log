@@ -1,0 +1,25 @@
+2022-03-11 20:48:28,406 INFO    MainThread:81471 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 20:48:28,407 INFO    MainThread:81471 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 20:48:28,407 INFO    MainThread:81471 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 20:48:28,407 WARNING MainThread:81471 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 20:48:28,407 INFO    MainThread:81471 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 20:48:28,407 INFO    MainThread:81471 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_204828-syybsx2g/logs/debug.log
+2022-03-11 20:48:28,408 INFO    MainThread:81471 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_204828-syybsx2g/logs/debug-internal.log
+2022-03-11 20:48:28,408 INFO    MainThread:81471 [wandb_init.py:init():439] calling init triggers
+2022-03-11 20:48:28,408 INFO    MainThread:81471 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 20:48:28,408 INFO    MainThread:81471 [wandb_init.py:init():492] starting backend
+2022-03-11 20:48:28,409 INFO    MainThread:81471 [backend.py:_multiprocessing_setup():101] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2022-03-11 20:48:28,424 INFO    MainThread:81471 [backend.py:ensure_launched():219] starting backend process...
+2022-03-11 20:48:28,430 INFO    MainThread:81471 [backend.py:ensure_launched():225] started backend process with pid: 81484
+2022-03-11 20:48:28,434 INFO    MainThread:81471 [wandb_init.py:init():501] backend started and connected
+2022-03-11 20:48:28,445 INFO    MainThread:81471 [wandb_init.py:init():565] updated telemetry
+2022-03-11 20:48:28,480 INFO    MainThread:81471 [wandb_init.py:init():596] communicating run to backend with 30 second timeout
+2022-03-11 20:48:29,693 INFO    MainThread:81471 [wandb_run.py:_on_init():1759] communicating current version
+2022-03-11 20:48:29,989 INFO    MainThread:81471 [wandb_run.py:_on_init():1763] got version response 
+2022-03-11 20:48:29,989 INFO    MainThread:81471 [wandb_init.py:init():625] starting run threads in backend
+2022-03-11 20:48:30,061 INFO    MainThread:81471 [wandb_run.py:_console_start():1733] atexit reg
+2022-03-11 20:48:30,062 INFO    MainThread:81471 [wandb_run.py:_redirect():1606] redirect: SettingsConsole.REDIRECT
+2022-03-11 20:48:30,064 INFO    MainThread:81471 [wandb_run.py:_redirect():1611] Redirecting console.
+2022-03-11 20:48:30,065 INFO    MainThread:81471 [wandb_run.py:_redirect():1667] Redirects installed.
+2022-03-11 20:48:30,066 INFO    MainThread:81471 [wandb_init.py:init():664] run started, returning control to user process

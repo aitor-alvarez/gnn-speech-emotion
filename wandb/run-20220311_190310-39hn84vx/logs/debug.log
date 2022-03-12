@@ -1,0 +1,124 @@
+2022-03-11 19:03:10,351 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:03:10,351 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:03:10,351 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:03:10,351 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:03:10,352 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:03:10,352 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190310-39hn84vx/logs/debug.log
+2022-03-11 19:03:10,352 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190310-39hn84vx/logs/debug-internal.log
+2022-03-11 19:03:10,352 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:03:10,352 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:03:10,353 INFO    MainThread:80059 [wandb_init.py:init():492] starting backend
+2022-03-11 19:03:10,353 INFO    MainThread:80059 [backend.py:_multiprocessing_setup():101] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2022-03-11 19:03:10,370 INFO    MainThread:80059 [backend.py:ensure_launched():219] starting backend process...
+2022-03-11 19:03:10,376 INFO    MainThread:80059 [backend.py:ensure_launched():225] started backend process with pid: 80074
+2022-03-11 19:03:10,381 INFO    MainThread:80059 [wandb_init.py:init():501] backend started and connected
+2022-03-11 19:03:10,395 INFO    MainThread:80059 [wandb_init.py:init():565] updated telemetry
+2022-03-11 19:03:10,426 INFO    MainThread:80059 [wandb_init.py:init():596] communicating run to backend with 30 second timeout
+2022-03-11 19:03:12,107 INFO    MainThread:80059 [wandb_run.py:_on_init():1759] communicating current version
+2022-03-11 19:03:12,307 INFO    MainThread:80059 [wandb_run.py:_on_init():1763] got version response 
+2022-03-11 19:03:12,308 INFO    MainThread:80059 [wandb_init.py:init():625] starting run threads in backend
+2022-03-11 19:03:12,389 INFO    MainThread:80059 [wandb_run.py:_console_start():1733] atexit reg
+2022-03-11 19:03:12,390 INFO    MainThread:80059 [wandb_run.py:_redirect():1606] redirect: SettingsConsole.REDIRECT
+2022-03-11 19:03:12,392 INFO    MainThread:80059 [wandb_run.py:_redirect():1611] Redirecting console.
+2022-03-11 19:03:12,394 INFO    MainThread:80059 [wandb_run.py:_redirect():1667] Redirects installed.
+2022-03-11 19:03:12,395 INFO    MainThread:80059 [wandb_init.py:init():664] run started, returning control to user process
+2022-03-11 19:04:15,760 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:04:15,760 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:04:15,760 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:04:15,760 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:04:15,760 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:04:15,760 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190415-2xg07sjd/logs/debug.log
+2022-03-11 19:04:15,761 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190415-2xg07sjd/logs/debug-internal.log
+2022-03-11 19:04:15,761 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:04:15,761 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:04:15,762 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:05:53,790 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:05:53,790 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:05:53,790 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:05:53,790 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:05:53,790 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:05:53,790 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190553-2splwe4v/logs/debug.log
+2022-03-11 19:05:53,790 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190553-2splwe4v/logs/debug-internal.log
+2022-03-11 19:05:53,791 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:05:53,791 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:05:53,791 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:06:40,402 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:06:40,402 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:06:40,402 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:06:40,402 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:06:40,402 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:06:40,402 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190640-xqypu1sx/logs/debug.log
+2022-03-11 19:06:40,403 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190640-xqypu1sx/logs/debug-internal.log
+2022-03-11 19:06:40,403 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:06:40,403 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:06:40,403 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:08:05,293 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:08:05,295 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:08:05,295 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:08:05,295 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:08:05,295 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:08:05,296 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190805-bbcd19w0/logs/debug.log
+2022-03-11 19:08:05,296 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190805-bbcd19w0/logs/debug-internal.log
+2022-03-11 19:08:05,297 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:08:05,297 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:08:05,297 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:08:25,750 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:08:25,750 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:08:25,750 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:08:25,750 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:08:25,751 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:08:25,751 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190825-ch25fkrj/logs/debug.log
+2022-03-11 19:08:25,751 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190825-ch25fkrj/logs/debug-internal.log
+2022-03-11 19:08:25,752 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:08:25,752 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:08:25,752 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:09:04,344 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:09:04,347 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:09:04,347 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:09:04,347 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:09:04,348 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:09:04,348 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190904-1vnhnuys/logs/debug.log
+2022-03-11 19:09:04,348 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_190904-1vnhnuys/logs/debug-internal.log
+2022-03-11 19:09:04,349 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:09:04,349 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:09:04,349 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:10:17,707 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:10:17,711 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:10:17,711 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:10:17,712 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:10:17,712 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:10:17,712 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_191017-mjxthxk0/logs/debug.log
+2022-03-11 19:10:17,713 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_191017-mjxthxk0/logs/debug-internal.log
+2022-03-11 19:10:17,713 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:10:17,714 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:10:17,714 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:11:08,158 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:11:08,161 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:11:08,162 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:11:08,162 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:11:08,162 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:11:08,163 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_191108-qc8nodg6/logs/debug.log
+2022-03-11 19:11:08,163 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_191108-qc8nodg6/logs/debug-internal.log
+2022-03-11 19:11:08,164 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:11:08,164 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:11:08,165 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active
+2022-03-11 19:11:58,441 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/.config/wandb/settings
+2022-03-11 19:11:58,441 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/settings
+2022-03-11 19:11:58,441 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Loading settings from environment variables: {}
+2022-03-11 19:11:58,442 WARNING MainThread:80059 [wandb_setup.py:_flush():75] Could not save program above cwd: /Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py
+2022-03-11 19:11:58,442 INFO    MainThread:80059 [wandb_setup.py:_flush():75] Inferring run settings from compute environment: {'program_relpath': None, 'program': '/Applications/PyCharm.app/Contents/helpers/pydev/pydevconsole.py'}
+2022-03-11 19:11:58,442 INFO    MainThread:80059 [wandb_init.py:_log_setup():405] Logging user logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_191158-1cgq0nvz/logs/debug.log
+2022-03-11 19:11:58,443 INFO    MainThread:80059 [wandb_init.py:_log_setup():406] Logging internal logs to /Users/aitorarronte/PycharmProjects/gnn-speech-emotion/wandb/run-20220311_191158-1cgq0nvz/logs/debug-internal.log
+2022-03-11 19:11:58,443 INFO    MainThread:80059 [wandb_init.py:init():439] calling init triggers
+2022-03-11 19:11:58,443 INFO    MainThread:80059 [wandb_init.py:init():443] wandb.init called with sweep_config: {}
+config: {}
+2022-03-11 19:11:58,444 INFO    MainThread:80059 [wandb_init.py:init():487] wandb.init() called when a run is still active

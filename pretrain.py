@@ -59,6 +59,7 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 			# Backprop and perform Adam optimization
 			loss.backward()
 			optimizer.step()
+			print(loss)
 
 			### Add loss per iteration to check later in epoch ###
 			epoch_loss.append(loss)

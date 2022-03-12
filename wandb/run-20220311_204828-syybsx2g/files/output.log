@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.6/lib/python3.6/code.py", line 91, in runcode
+    exec(code, self.locals)
+  File "<input>", line 1, in <module>
+  File "<input>", line 23, in exec
+  File "/Users/aitorarronte/PycharmProjects/gnn-speech-emotion/node_train.py", line 34, in train
+    model.load_state_dict(checkpoint['model_state_dict'])
+  File "/Users/aitorarronte/PycharmProjects/gnn-speech-emotion/venv/lib/python3.6/site-packages/torch/nn/modules/module.py", line 1483, in load_state_dict
+    self.__class__.__name__, "\n\t".join(error_msgs)))
+RuntimeError: Error(s) in loading state_dict for GCNN:

@@ -2,26 +2,28 @@ import torch
 import argparse
 from node_train import train, test
 import torchaudio
-from models.gnn import GCNN, AttGCNN
+from models.gnn import GCNN, AttGCNN, DeeperGCN
 from models.speech_representations import ResidualBLSTM, Resblock
 from pretrain import pretrain
 from dataset.dataloader import padding_tensor
 import os
 from torch.utils.data import DataLoader
+from torch_geometric.loader import RandomNodeSampler, GraphSAINTSampler
 
 
-def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
+def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=300, complete=False):
 	if complete == True:
 		graph = torch.load(graph_path)
 		graph = complete_graph_with_speech_features(speech_model_path, graph)
-		torch.save(graph, 'patterns/graph.pt')
+		torch.save(graph, 'patterns/test_graph.pt')
 	else:
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		graph = torch.load(graph_path)
-		model = AttGCNN()
+		model = DeeperGCN(128, 28, graph)
 		model.to(device)
+		train_loader = RandomNodeSampler(graph, 2)
 		train(model, graph, num_epochs)
-		test('gnn.pt', model, torch.load('patterns/test/graph.pt'))
+		test(model, torch.load('patterns/test/graph.pt'))
 
 
 #add speech features to x in graph object
