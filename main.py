@@ -21,7 +21,7 @@ def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretra
 		graph = torch.load(graph_path)
 		model = AttGCNN()
 		model.to(device)
-		train_loader = RandomNodeSampler(graph, 2)
+		train_loader = RandomNodeSampler(graph, 3)
 		train(model, train_loader, graph, num_epochs)
 		test(model, torch.load('patterns/test/graph.pt'))
 
