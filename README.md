@@ -13,6 +13,7 @@ Generate graph with the following command:
 
 ```
 python preprocess.py -g '~/IEMOCAP/train/'
+python preprocess.py -g '~/IEMOCAP/test/'
 
 ```
 
