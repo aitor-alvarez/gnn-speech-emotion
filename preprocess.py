@@ -20,7 +20,7 @@ def main():
 
 	if args.build_corpus:
 		build_corpus(args.build_corpus)
-	if args.generate_patterns:
+	elif args.generate_patterns:
 		subs = os.listdir(args.generate_patterns)
 		print("Generating patterns...")
 		for s in subs:
@@ -28,7 +28,7 @@ def main():
 				print(s)
 				generate_dataset(args.generate_patterns, s)
 
-	if args.generate_graph:
+	elif args.generate_graph:
 		subs = os.listdir(args.generate_graph)
 		print("Generating graph...")
 		contours_list=[]
@@ -43,8 +43,6 @@ def main():
 		print("Please provide the arguments needed. Check the help command -h to see the arguments available.")
 
 
-
-
 if __name__ == '__main__':
-    main()
+	main()
 

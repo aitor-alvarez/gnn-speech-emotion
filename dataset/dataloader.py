@@ -45,6 +45,35 @@ def audio_loader(audio_path):
 	return samples, torch.tensor(labels), max(max_len)
 
 
+def save_tensors(audio_path, audio_path2, max_len):
+	subs = os.listdir(audio_path)
+	for sub in subs:
+		if os.path.isdir(audio_path + sub + '/'):
+			subdir = os.listdir(audio_path + sub + '/')
+			files = [f for f in subdir]
+			for f in files:
+				if f.endswith('.wav'):
+					t= torchaudio.load(audio_path + sub +  '/' + f)[0]
+					t = padding_tensor(t, max_len)
+					torch.save(t, audio_path2 + sub +  '/' + f.replace('.wav', '.pt'))
+
+
+def tensor_loader(audio_path):
+	emo = {'ang': 0, 'hap': 1, 'neu': 2, 'sad': 3}
+	subs = os.listdir(audio_path)
+	samples = []
+	labels=[]
+	for sub in subs:
+		if os.path.isdir(audio_path + sub + '/'):
+			subdir = os.listdir(audio_path + sub + '/')
+			files = [f for f in subdir]
+			for f in files:
+				if f.endswith('.pt'):
+					labels.append(emo[sub])
+					samples.append(torch.load(audio_path + sub +  '/' + f))
+	return samples, torch.tensor(labels)
+
+
 def sample_subgraphs(graph, node_ids):
 	subgraphs=[]
 	for id in node_ids:
@@ -53,16 +82,12 @@ def sample_subgraphs(graph, node_ids):
 	return subgraphs
 
 
-def padding_tensor(sequences, max_len):
+def padding_tensor(tensor, max_len):
 		"""
-		input=list of tensors
+		input=tensor
 		"""
-		num = len(sequences)
-		out_dims = (num, max_len)
-		out_tensor = sequences[0].data.new(*out_dims).fill_(0)
-		for i, tensor in enumerate(sequences):
-				length = tensor.size(1)
-				out_tensor[i, :length] = tensor
+		out_dims = (1, max_len)
+		out_tensor = tensor.data.new(*out_dims).fill_(0)
 		return out_tensor
 
 

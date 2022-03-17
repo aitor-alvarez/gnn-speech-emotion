@@ -8,10 +8,10 @@ from pretrain import pretrain
 from dataset.dataloader import padding_tensor
 import os
 from torch.utils.data import DataLoader
-from torch_geometric.loader import RandomNodeSampler, GraphSAINTSampler
+from torch_geometric.loader import RandomNodeSampler, GraphSAINTNodeSampler, GraphSAINTEdgeSampler
 
 
-def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=300, complete=False):
+def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
 	if complete == True:
 		graph = torch.load(graph_path)
 		graph = complete_graph_with_speech_features(speech_model_path, graph)
@@ -19,9 +19,10 @@ def exec(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretra
 	else:
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		graph = torch.load(graph_path)
-		model = AttGCNN()
+		model = GCNN()
 		model.to(device)
-		train_loader = RandomNodeSampler(graph, 3)
+		#train_loader = RandomNodeSampler(graph, 3)
+		train_loader = GraphSAINTEdgeSampler(graph, 456)
 		train(model, train_loader, graph, num_epochs)
 		test(model, torch.load('patterns/test/graph.pt'))
 
@@ -82,7 +83,9 @@ if __name__ == '__main__':
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		model = ResidualBLSTM(Resblock, [2])
 		pretrain(model, device, args.num_epochs, args.batch_size, args.audio_path1, args.audio_path2)
-	elif args.data_path:
-		exec(args.data_path, args.speech_model, args.batch_size, args.num_epochs)
+	elif args.data_path and args.num_epochs:
+		node_training(args.data_path)
+		if args.num_epochs:
+			node_training(args.data_path, num_epochs=args.num_epochs)
 	else:
 		print("please provide valid arguments. See -h for help.")

@@ -1,5 +1,5 @@
 import torch
-from dataset.dataloader import padding_tensor, audio_loader, write_file
+from dataset.dataloader import padding_tensor, audio_loader, write_file, tensor_loader, save_tensors
 import numpy as np
 import os
 from torch.optim.lr_scheduler import ExponentialLR
@@ -28,7 +28,7 @@ def pretrain(model, device, num_epochs, batch_size, train_path, test_path):
 	train_data, train_labels, max_len = audio_loader(train_path)
 	test_data, test_labels, max_len2 = audio_loader(test_path)
 	max_len=max(max_len, max_len2)
-	train_data = padding_tensor(train_data, max_len)
+	train_data = [padding_tensor(t, max_len) for t in train_data]
 	train_data = TensorDataset(train_data, train_labels)
 	test_data = padding_tensor(test_data, max_len)
 	test_data = TensorDataset(test_data, test_labels)

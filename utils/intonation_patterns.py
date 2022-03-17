@@ -41,12 +41,11 @@ def generate_dataset(audio_dir, emo, train=False):
 	if train == False: sub='test/'
 	contours, files, pitches, inds= create_contours(audio_dir, emo)
 	pattern_length = 8
-	filename = 'patterns/'+sub+emo
-	Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
-	MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
+	#Gapbide(contours, 12, 0, 0, pattern_length, filename).run()
+	#MaximalPatterns(filename+'_intervals.txt', filename + '_maximal.txt').execute()
 	dictionary = create_dictionary('patterns/'+sub+emo+'_maximal.txt')
 	path_out_audio='patterns/'+sub+emo+'/'
-	#create_audio_samples(dictionary, contours, files, pitches, inds, path_out_audio, audio_dir+emo+'/')
+	create_audio_samples(dictionary, contours, files, pitches, inds, audio_dir+emo+'/', path_out_audio)
 
 
 def create_contours(audio_dir, emo):
@@ -57,7 +56,7 @@ def create_contours(audio_dir, emo):
 
 ###Creates a graph based on the prosodic similarity of the speech utterances.
 def generate_graph(contours, files):
-	dictionary = create_nodes_dictionary('patterns/test/')
+	dictionary = create_nodes_dictionary('patterns/train/')
 	G = nx.Graph()
 	node_list=[]
 	for d in dictionary:
@@ -90,18 +89,14 @@ def add_edge_attributes(G, nodes):
 	return G
 
 
-#Takes as input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
+#Takes as the input a dictionary of (intonation) patterns and contours and slices audio files based on the patterns
 # contained in the dictionary. At the same time it saves the co-occurences of patterns in an adjacency list to
 #create a graph.
-def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio_dir):
+
+def create_audio_samples(dictionary, contours, files, pitches, inds, path, path_out_audio):
 	for i, c in enumerate(contours):
 		G = nx.Graph()
-		filename = files[i].replace('.wav', '_')
-		path2 = path+ files[i].replace('.wav', '/')
-		if os.path.exists(path2):
-			pass
-		else:
-			os.mkdir(path2)
+		path2 = path+files[i]
 		for d in dictionary:
 			if len(d) > len(c):
 				continue
@@ -109,31 +104,31 @@ def create_audio_samples(dictionary, contours, files, pitches, inds, path, audio
 				sub = find_sublist(d, c)
 			if sub:
 				for s in sub:
-					name = filename+str(uuid.uuid4())+'.wav'
+					name = files[i].replace('.wav', '_')+str(uuid.uuid4())+'.wav'
 					ini = inds[i][s[0]][0]+1
 					end = inds[i][s[1]][0]+1
-					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path2, name, audio_dir+files[i])
-					G.add_node(name, y=path2+name)
+					slice_audio(pitches[i].get_time_from_frame_number(ini), pitches[i].get_time_from_frame_number(end), path2, name, path_out_audio)
+					G.add_node(name, y=path_out_audio+name)
 		if G.number_of_nodes()>0:
 			graph = create_graph(G)
 			graph = from_networkx(graph)
-			torch.save(graph, path2+filename+ '.pt')
+			torch.save(graph, path_out_audio +files[i].replace('.wav', '')+ '.pt')
 
 
-def slice_audio(slice_from, slice_to, path, name, audio_file):
-	audio = AudioSegment.from_wav(audio_file)
+def slice_audio(slice_from, slice_to, path, audio_file, path_out):
+	audio = AudioSegment.from_wav(path)
 	try:
 		seg = audio[slice_from * 1000:slice_to * 1100]
 		seg.set_channels(2)
-		seg.export(path+name, format="wav", bitrate="192k")
+		seg.export(path_out+audio_file, format="wav", bitrate="192k")
 	except:
-		print(f"ERROR PROCESSING AUDIO FILE: {name}")
+		print(f"ERROR PROCESSING AUDIO FILE: {path}")
 
 
 #extract f0 from Parselmouth Praat function
 def get_f0_praat(audio_dir):
-	files = [audio_dir+f for f in os.listdir(audio_dir) if f.endswith('.wav')]
-	pitches = [parselmouth.Sound(f).to_pitch(pitch_floor=75.0, pitch_ceiling=650.0) for f in files]
+	files = [f for f in os.listdir(audio_dir) if f.endswith('.wav')]
+	pitches = [parselmouth.Sound(audio_dir+f).to_pitch(pitch_floor=75.0, pitch_ceiling=650.0) for f in files]
 	fqs = [pitch.kill_octave_jumps().selected_array['frequency'] for pitch in pitches]
 	return fqs, files, pitches
 
