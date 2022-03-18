@@ -17,7 +17,7 @@ from torch_geometric.utils import from_networkx
 #IEMOCAP labels used
 emotions=['ang', 'hap', 'neu', 'sad', 'exc']
 
-#We build the corpus by creating directories by emotion to be used by torch dataloader
+#We build the corpus by creating directories by emotion to be used by a dataloader
 def build_corpus(iemocap_dir):
 	subpath='/Train/'
 	csv_files = [csv for csv in os.listdir(iemocap_dir+subpath) if csv.endswith('.csv')]
@@ -36,7 +36,7 @@ def build_corpus(iemocap_dir):
 
 
 #Create the dataset of patterns, extracting the audio and graphs for each emotional utterance
-def generate_dataset(audio_dir, emo, train=False):
+def generate_dataset(audio_dir, emo, train=True):
 	if train == True: sub='train/'
 	if train == False: sub='test/'
 	contours, files, pitches, inds= create_contours(audio_dir, emo)

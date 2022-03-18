@@ -8,7 +8,7 @@ from pretrain import pretrain
 from dataset.dataloader import padding_tensor
 import os
 from torch.utils.data import DataLoader
-from torch_geometric.loader import RandomNodeSampler, GraphSAINTNodeSampler, GraphSAINTEdgeSampler
+from torch_geometric.loader import GraphSAINTNodeSampler, GraphSAINTRandomWalkSampler
 
 
 def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
@@ -19,10 +19,10 @@ def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_pat
 	else:
 		device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 		graph = torch.load(graph_path)
-		model = GCNN()
+		model = AttGCNN()
 		model.to(device)
-		#train_loader = RandomNodeSampler(graph, 3)
-		train_loader = GraphSAINTEdgeSampler(graph, 456)
+		train_loader = GraphSAINTNodeSampler (graph, batch_size=925, num_steps=30, sample_coverage=100)
+		#train_loader = GraphSAINTRandomWalkSampler(graph, batch_size=222, walk_length=2,num_steps=10, sample_coverage=100)
 		train(model, train_loader, graph, num_epochs)
 		test(model, torch.load('patterns/test/graph.pt'))
 
@@ -42,6 +42,9 @@ def complete_graph_with_speech_features(speech_model_path, graph):
 	graph.edge_weight = graph.weight
 	return graph
 
+
+def update_graphs_speech_features(dir):
+	return None
 
 def get_speech_representations(speech_model, data, max_len=510560):
 	embeddings=[]

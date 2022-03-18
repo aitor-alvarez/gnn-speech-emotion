@@ -2,13 +2,13 @@ import torch
 from torch.functional import F
 from dataset.dataloader import get_subgraph, write_file
 import os
-from torch.optim.lr_scheduler import ExponentialLR
+from torch_geometric.utils import degree
 import wandb
 
 
 def train(model, train_loader, graph, num_epochs):
 	wandb.init(project="gnn-emotion", entity="arronte")
-	lr = 0.005
+	lr = 0.001
 
 	wandb.config = {
 		"learning_rate": lr,
@@ -17,10 +17,10 @@ def train(model, train_loader, graph, num_epochs):
 
 	optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=5e-4)
 	#scheduler = ExponentialLR(optimizer, gamma=0.9)
-	#criterion = torch.nn.CrossEntropyLoss()
+	criterion = torch.nn.CrossEntropyLoss()
 	#criterion = F.nll_loss()
 
-	epochs_stop = 5
+	epochs_stop = 3
 	min_loss = None
 	no_improve = 0
 	acc_list = []
@@ -40,12 +40,16 @@ def train(model, train_loader, graph, num_epochs):
 
 	for epoch in range(start_epoch, num_epochs):
 		epoch_loss=[]
+		print(len(train_loader))
 		for graph in train_loader:
+			row, col = graph.edge_index
+			#Edge degree
+			#edge_weight = 1. / degree(col, graph.num_nodes)[col]
+			edge_weight = graph.edge_norm * graph.edge_weight
 			optimizer.zero_grad()
 			labels = graph.y
-			weights = graph.edge_weight
-			out = model(graph.x, graph.edge_index, weights)
-			loss = F.nll_loss(out, labels)
+			out = model(graph.x, graph.edge_index, edge_weight)
+			loss = criterion(out, labels)
 
 			# Track the accuracy
 			total = labels.size(0)
