@@ -22,9 +22,32 @@ def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_pat
 		model = AttGCNN()
 		model.to(device)
 		train_loader = GraphSAINTNodeSampler (graph, batch_size=925, num_steps=30, sample_coverage=100)
-		#train_loader = GraphSAINTRandomWalkSampler(graph, batch_size=222, walk_length=2,num_steps=10, sample_coverage=100)
 		train(model, train_loader, graph, num_epochs)
 		test(model, torch.load('patterns/test/graph.pt'))
+
+
+def update_graphs_speech_features(speech_model_path='pretrained/speech_representation.pt', train=True):
+	emo = {'ang': 0, 'hap': 1, 'neu': 2, 'sad': 3}
+	if train == True: dir = 'patterns/train/'
+	if train == False: dir = 'patterns/test/'
+	speech_model = ResidualBLSTM(Resblock, [2])
+	if os.path.isfile(speech_model_path):
+		checkpoint = torch.load(speech_model_path)
+		speech_model.load_state_dict(checkpoint['model_state_dict'])
+	# Remove the last classification layer in the model
+	speech_model.classify = torch.nn.Identity()
+	speech_model.eval()
+
+	subs = os.listdir(dir)
+	for s in subs:
+		if os.path.isdir(dir + s + '/'):
+			files = os.listdir(dir + s + '/')
+			for f in files:
+				if f.endswith('.pt'):
+					graph = torch.load(dir + s + '/'+f)
+					graph.x = get_speech_representations(speech_model, graph.y)
+					graph.label = emo[graph.y[0][graph.y[0].rfind('/')-3:graph.y[0].rfind('/')]]
+					torch.save(graph, dir + s + '/'+f)
 
 
 #add speech features to x in graph object
@@ -42,9 +65,6 @@ def complete_graph_with_speech_features(speech_model_path, graph):
 	graph.edge_weight = graph.weight
 	return graph
 
-
-def update_graphs_speech_features(dir):
-	return None
 
 def get_speech_representations(speech_model, data, max_len=510560):
 	embeddings=[]

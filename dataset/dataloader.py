@@ -82,13 +82,17 @@ def sample_subgraphs(graph, node_ids):
 	return subgraphs
 
 
-def padding_tensor(tensor, max_len):
-		"""
-		input=tensor
-		"""
-		out_dims = (1, max_len)
-		out_tensor = tensor.data.new(*out_dims).fill_(0)
-		return out_tensor
+def padding_tensor(sequences, max_len):
+	"""
+	input=list of tensors
+	"""
+	num = len(sequences)
+	out_dims = (num, max_len)
+	out_tensor = sequences[0].data.new(*out_dims).fill_(0)
+	for i, tensor in enumerate(sequences):
+		length = tensor.size(1)
+		out_tensor[i, :length] = tensor
+	return out_tensor
 
 
 def get_subgraph(graph_data, hop=None, type='sub', batch_size=None):
