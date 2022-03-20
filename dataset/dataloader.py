@@ -45,6 +45,21 @@ def audio_loader(audio_path):
 	return samples, torch.tensor(labels), max(max_len)
 
 
+#Create dataloader of graphs
+def graph_loader(dir):
+	subs = os.listdir(dir)
+	graphs = []
+	for sub in subs:
+		if os.path.isdir(dir + sub + '/'):
+			subdir = os.listdir(dir + sub + '/')
+			for f in subdir:
+				if f.endswith('.pt'):
+					graph = torch.load(dir + sub + '/'+f)
+					if graph.num_nodes >= 5:
+						graphs.append(graph)
+	return graphs
+
+
 def save_tensors(audio_path, audio_path2, max_len):
 	subs = os.listdir(audio_path)
 	for sub in subs:

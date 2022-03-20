@@ -1,14 +1,16 @@
 import torch
 import argparse
 from node_train import train, test
+from graph_training import train_graphs, test_graphs
 import torchaudio
 from models.gnn import GCNN, AttGCNN
 from models.speech_representations import ResidualBLSTM, Resblock
 from pretrain import pretrain
-from dataset.dataloader import padding_tensor
+from dataset.dataloader import padding_tensor, graph_loader
 import os
 from torch.utils.data import DataLoader
-from torch_geometric.loader import GraphSAINTNodeSampler, GraphSAINTRandomWalkSampler
+from torch_geometric.loader import GraphSAINTNodeSampler
+from torch_geometric.loader import DataLoader as DL
 
 
 def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
@@ -26,7 +28,19 @@ def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_pat
 		test(model, torch.load('patterns/test/graph.pt'))
 
 
-def update_graphs_speech_features(speech_model_path='pretrained/speech_representation.pt', train=True):
+
+def graph_training(dir='patterns/', num_epochs=200):
+	train = dir + 'train/'
+	test = dir + 'test/'
+	model = GCNN()
+	model.to(device)
+	train_dataloader = DL(graph_loader(train), batch_size=32, shuffle=True)
+	test_dataloader = graph_loader(test)
+	train_graphs(model, train_dataloader, num_epochs=num_epochs)
+	test_graphs(model, test_dataloader)
+
+
+def update_graphs_speech_features(speech_model_path='pretrained/speech_representation.pt', train=False):
 	emo = {'ang': 0, 'hap': 1, 'neu': 2, 'sad': 3}
 	if train == True: dir = 'patterns/train/'
 	if train == False: dir = 'patterns/test/'

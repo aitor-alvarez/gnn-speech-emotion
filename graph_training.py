@@ -1,13 +1,9 @@
 import torch
-from torch.functional import F
-from dataset.dataloader import get_subgraph, write_file
-import os
-from torch_geometric.utils import degree
 import wandb
 
 
-def train(model, train_loader, graph, num_epochs):
-	wandb.init(project="gnn-emotion", entity="arronte")
+def train_graphs(model, train_loader, num_epochs):
+	#wandb.init(project="gnn-emotion", entity="arronte")
 	lr = 0.001
 
 	wandb.config = {
@@ -16,7 +12,6 @@ def train(model, train_loader, graph, num_epochs):
 	}
 
 	optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=5e-4)
-	#scheduler = ExponentialLR(optimizer, gamma=0.9)
 	criterion = torch.nn.CrossEntropyLoss()
 	#criterion = F.nll_loss()
 
@@ -26,15 +21,6 @@ def train(model, train_loader, graph, num_epochs):
 	acc_list = []
 	epoch_min_loss = None
 	start_epoch=1
-	checkpoint_path = 'gnn.pt'
-
-	#Check if a checkpoint exists to continue training
-	if os.path.isfile('gnn.pt'):
-		checkpoint = torch.load('gnn.pt')
-		model.load_state_dict(checkpoint['model_state_dict'])
-		optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-		start_epoch = checkpoint['epoch']
-		loss = checkpoint['loss']
 
 	model.train()
 
@@ -42,9 +28,6 @@ def train(model, train_loader, graph, num_epochs):
 		epoch_loss=[]
 		print(len(train_loader))
 		for graph in train_loader:
-			row, col = graph.edge_index
-			#Edge degree
-			#edge_weight = 1. / degree(col, graph.num_nodes)[col]
 			edge_weight = graph.edge_norm * graph.edge_weight
 			optimizer.zero_grad()
 			labels = graph.y
@@ -63,16 +46,6 @@ def train(model, train_loader, graph, num_epochs):
 			print(loss)
 			epoch_loss.append(loss)
 
-			# Scheduler decay
-			#scheduler.step()
-
-			#torch.save({
-			#	'epoch': epoch,
-			#	'model_state_dict': model.state_dict(),
-			#	'optimizer_state_dict': optimizer.state_dict(),
-			#	'loss': loss,
-			#}, checkpoint_path)
-
 		### Epoch check ###
 		e_loss = sum(epoch_loss) / len(epoch_loss)
 		if epoch_min_loss == None:
@@ -86,17 +59,18 @@ def train(model, train_loader, graph, num_epochs):
 			break
 
 		# Visualization
-		wandb.log({"loss": loss})
+		#wandb.log({"loss": loss})
 		# wandb.watch(model)
 
 
-
-
-def test(model, graph):
-	labels = graph.y
-	weights = graph.edge_weight
-	total = labels.size(0)
-	out = model(graph.x, graph.edge_index, weights)
-	_, predicted = torch.max(out.data, 1)
-	correct = (predicted == labels).sum().item()
+def test_graphs(model, test_loader):
+	labels=[]
+	predictions=[]
+	for graph in test_loader:
+		labels.append(graph.y)
+		out = model(graph.x, graph.edge_index)
+		_, predicted = torch.max(out.data, 1)
+		predictions.append(int(predicted))
+	total = len(labels)
+	correct = (torch.as_tensor(predictions) == torch.as_tensor(labels)).sum().item()
 	print((correct / total)*100)

@@ -36,7 +36,7 @@ def build_corpus(iemocap_dir):
 
 
 #Create the dataset of patterns, extracting the audio and graphs for each emotional utterance
-def generate_dataset(audio_dir, emo, train=True):
+def generate_dataset(audio_dir, emo, train=False):
 	if train == True: sub='train/'
 	if train == False: sub='test/'
 	contours, files, pitches, inds= create_contours(audio_dir, emo)
