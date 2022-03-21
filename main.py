@@ -3,7 +3,7 @@ import argparse
 from node_train import train, test
 from graph_training import train_graphs, test_graphs
 import torchaudio
-from models.gnn import GCNN, AttGCNN
+from models.gnn import GCNN, AttGCNN, DiffPool
 from models.speech_representations import ResidualBLSTM, Resblock
 from pretrain import pretrain
 from dataset.dataloader import padding_tensor, graph_loader
@@ -11,6 +11,21 @@ import os
 from torch.utils.data import DataLoader
 from torch_geometric.loader import GraphSAINTNodeSampler
 from torch_geometric.loader import DataLoader as DL
+
+
+#Training batches of graphs
+def graph_training(dir='patterns/', num_epochs=200):
+	device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+	train = dir + 'train/'
+	test = dir + 'test/'
+	model = DiffPool()
+	model.to(device)
+	train_dataloader = graph_loader(train)
+	train_dataloader = DL(train_dataloader, batch_size=32, shuffle=True)
+	test_dataloader = graph_loader(test)
+	test_dataloader =  DL(test_dataloader, batch_size=1, shuffle=False)
+	train_graphs(model, train_dataloader, num_epochs=num_epochs)
+	test_graphs(model, test_dataloader)
 
 
 def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_path='pretrained/speech_representation.pt', num_epochs=200, complete=False):
@@ -26,18 +41,6 @@ def node_training(graph_path='patterns/train/graph_weights.pt', speech_model_pat
 		train_loader = GraphSAINTNodeSampler (graph, batch_size=925, num_steps=30, sample_coverage=100)
 		train(model, train_loader, graph, num_epochs)
 		test(model, torch.load('patterns/test/graph.pt'))
-
-
-
-def graph_training(dir='patterns/', num_epochs=200):
-	train = dir + 'train/'
-	test = dir + 'test/'
-	model = GCNN()
-	model.to(device)
-	train_dataloader = DL(graph_loader(train), batch_size=32, shuffle=True)
-	test_dataloader = graph_loader(test)
-	train_graphs(model, train_dataloader, num_epochs=num_epochs)
-	test_graphs(model, test_dataloader)
 
 
 def update_graphs_speech_features(speech_model_path='pretrained/speech_representation.pt', train=False):

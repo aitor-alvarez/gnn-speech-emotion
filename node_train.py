@@ -93,10 +93,12 @@ def train(model, train_loader, graph, num_epochs):
 
 
 def test(model, graph):
-	labels = graph.y
-	weights = graph.edge_weight
-	total = labels.size(0)
-	out = model(graph.x, graph.edge_index, weights)
-	_, predicted = torch.max(out.data, 1)
-	correct = (predicted == labels).sum().item()
-	print((correct / total)*100)
+	model.eval()
+	with torch.no_grad():
+		labels = graph.y
+		weights = graph.edge_weight
+		total = labels.size(0)
+		out = model(graph.x, graph.edge_index, weights)
+		_, predicted = torch.max(out.data, 1)
+		correct = (predicted == labels).sum().item()
+		print((correct / total)*100)
