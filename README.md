@@ -1,4 +1,4 @@
-# Prosody-Aware Graph Neural Networks for Robust Speech Emotion Recognition
+# Prosody-Aware Graph Neural Networks for Speech Emotion Recognition
 
 ### Create subgraphs based on the prosodic content of the utterances
 
