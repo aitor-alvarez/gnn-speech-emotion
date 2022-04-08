@@ -28,9 +28,20 @@ Where each emotion label is a subdirectory of the train/ directory.
 
 ### Pretrain the speech model
 
-Use the following command where -b and -e parameters are bact size and epochs respectively. 
+Use the following command where -b and -e parameters are batch size and epochs respectively. 
 
 ```
 python main.py -ptrain '~/IEMOCAP/train/' -ptest '~/IEMOCAP/test/' -b 128 -e 100
 
 ```
+
+### Train and test the graph model
+
+
+
+```
+python main.py -d 'patterns/' -b 64 -e 200
+
+```
+
+where patterns/ is the directory where the prosodic patterns are located.
