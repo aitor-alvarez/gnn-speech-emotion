@@ -27,7 +27,7 @@ class AttGCNN(nn.Module):
 
 	def __init__(self):
 		super().__init__()
-		self.gconv1 = GATv2Conv(128, 128, heads=4, dropout=0.4)
+		self.gconv1 = GATv2Conv(128, 128, heads=2, dropout=0.4)
 		self.gconv2 = GATv2Conv(128*4, 4, heads=1, concat=False, dropout=0.4)
 		self.relu = nn.LeakyReLU()
 
