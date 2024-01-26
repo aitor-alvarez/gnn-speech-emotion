@@ -12,7 +12,6 @@ def train_graphs(model, train_loader, num_epochs):
 
 	optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=5e-4)
 	criterion = torch.nn.CrossEntropyLoss()
-	#criterion = F.nll_loss()
 
 	epochs_stop = 5
 	min_loss = None
