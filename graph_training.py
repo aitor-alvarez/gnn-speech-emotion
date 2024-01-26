@@ -3,7 +3,6 @@ import wandb
 
 
 def train_graphs(model, train_loader, num_epochs):
-	#wandb.init(project="gnn-emotion", entity="arronte")
 	lr = 0.005
 
 	wandb.config = {
