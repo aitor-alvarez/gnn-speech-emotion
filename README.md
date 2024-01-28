@@ -37,8 +37,6 @@ python main.py -ptrain '~/IEMOCAP/train/' -ptest '~/IEMOCAP/test/' -b 128 -e 100
 
 ### Train and test the graph model
 
-
-
 ```
 python main.py -d 'patterns/' -b 64 -e 200
 
